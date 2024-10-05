@@ -17,6 +17,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch.cuda.amp as amp
 
+
 # Download and extract the ARC dataset
 def download_and_extract_arc():
     arc_url = "https://github.com/fchollet/ARC/archive/master.zip"
@@ -218,6 +219,6 @@ def visualize_demonstration(env, task_id):
     print(f"Final action sequence: {env.action_sequence}")
 
 # Usage
-env = GridTransformationEnv(arc_dataset)  # Initialize your environment
-task_id_to_visualize = "28e73c20"  # Replace with the task ID you want to visualize
-visualize_demonstration(env, task_id_to_visualize)
+# env = GridTransformationEnv(arc_dataset)  # Initialize your environment
+# task_id_to_visualize = "28e73c20"  # Replace with the task ID you want to visualize
+# visualize_demonstration(env, task_id_to_visualize)

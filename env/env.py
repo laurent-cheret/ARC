@@ -2,6 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 import torch
+import torch.nn as nn
 from torch.utils.data import Dataset
 import random
 import math
@@ -14,16 +15,19 @@ import logging
 
 
 # Add the directory to Python's sys.path
-dsl_path = '/content/drive/MyDrive/ARC_CHALLENGE'
+# dsl_path = '/content/drive/MyDrive/ARC_CHALLENGE'
+dsl_path = '/'
 if dsl_path not in sys.path:
     sys.path.append(dsl_path)
 
 # Import primitive functions
-from dsl.basic_transformations import *
-from dsl.memory_operations import *
-from dsl.color_operations import *
-from dsl.critical_operations import *
-from dsl.abstract_operations import *
+# from dsl.basic_transformations import *
+# from dsl.memory_operations import *
+# from dsl.color_operations import *
+# from dsl.critical_operations import *
+# from dsl.abstract_operations import *
+
+
 class ARCDataset(Dataset):
     def __init__(self, tasks):
         self.tasks = list(tasks.values())
