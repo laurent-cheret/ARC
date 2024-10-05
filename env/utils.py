@@ -17,6 +17,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch.cuda.amp as amp
 
+
 # Download and extract the ARC dataset
 def download_and_extract_arc():
     arc_url = "https://github.com/fchollet/ARC/archive/master.zip"
@@ -111,40 +112,57 @@ def load_tasks(directory):
                 tasks[filename[:-5]] = task
     return tasks
 
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import numpy as np
+
 def visualize_grids(env):
     cmap = colors.ListedColormap(['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00',
                                   '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25'])
     norm = colors.Normalize(vmin=0, vmax=9)
 
     num_inputs = len(env.current_grids)
-    num_memory = sum(1 for m in env.memory if m is not None)
-    
-    fig, axs = plt.subplots(1, num_inputs + num_memory, figsize=(5*(num_inputs + num_memory), 5))
-    if num_inputs + num_memory == 1:
-        axs = [axs]
-    
-    # Visualize current grids
-    for i, grid_list in enumerate(env.current_grids):
-        if grid_list:
-            axs[i].imshow(grid_list[0], cmap=cmap, norm=norm)
-            axs[i].set_title(f"Input {i+1}")
-        else:
-            axs[i].axis('off')
-        axs[i].set_xticks([])
-        axs[i].set_yticks([])
-    
-    # Visualize memory grids
-    for i, memory_grids in enumerate(env.memory):
-        if memory_grids is not None:
-            axs[num_inputs + i].imshow(memory_grids[0], cmap=cmap, norm=norm)
-            axs[num_inputs + i].set_title(f"Memory {i+1}")
-        else:
-            axs[num_inputs + i].axis('off')
-        axs[num_inputs + i].set_xticks([])
-        axs[num_inputs + i].set_yticks([])
-    
+    num_memory_slots = sum(1 for m in env.memory if m is not None)
+    num_memory_grids = sum(len(m) for m in env.memory if m is not None)
+    total_grids = num_inputs + num_memory_grids
+
+    fig, axs = plt.subplots(1, max(1, total_grids), figsize=(5 * max(1, total_grids), 5))
+    if total_grids == 0:
+        plt.text(0.5, 0.5, 'No grids to display', horizontalalignment='center', verticalalignment='center')
+        plt.axis('off')
+    else:
+        if total_grids == 1:
+            axs = [axs]
+
+        # Visualize current grids
+        for i, grid_list in enumerate(env.current_grids):
+            if grid_list:
+                axs[i].imshow(grid_list[0], cmap=cmap, norm=norm)
+                axs[i].set_title(f"Input {i+1}")
+            else:
+                axs[i].axis('off')
+            axs[i].set_xticks([])
+            axs[i].set_yticks([])
+
+        # Visualize memory grids
+        memory_index = num_inputs
+        for slot, memory_grids in enumerate(env.memory):
+            if memory_grids is not None:
+                for i, grid in enumerate(memory_grids):
+                    if memory_index < len(axs):
+                        axs[memory_index].imshow(grid, cmap=cmap, norm=norm)
+                        axs[memory_index].set_title(f"Memory {slot+1}.{i+1}")
+                        axs[memory_index].set_xticks([])
+                        axs[memory_index].set_yticks([])
+                        memory_index += 1
+            elif memory_index < len(axs):
+                axs[memory_index].axis('off')
+                memory_index += 1
+
     plt.tight_layout()
     plt.show()
+
+# The rest of your code (GridTransformationEnv class, etc.) remains the same
 
 def print_action_list(env):
     print("List of Actions:")
@@ -218,6 +236,6 @@ def visualize_demonstration(env, task_id):
     print(f"Final action sequence: {env.action_sequence}")
 
 # Usage
-env = GridTransformationEnv(arc_dataset)  # Initialize your environment
-task_id_to_visualize = "28e73c20"  # Replace with the task ID you want to visualize
-visualize_demonstration(env, task_id_to_visualize)
+# env = GridTransformationEnv(arc_dataset)  # Initialize your environment
+# task_id_to_visualize = "28e73c20"  # Replace with the task ID you want to visualize
+# visualize_demonstration(env, task_id_to_visualize)
