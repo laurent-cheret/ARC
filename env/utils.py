@@ -1,6 +1,115 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
+import os
+import json
+import numpy as np
+import matplotlib.pyplot as plt
+import requests
+import zipfile
+from io import BytesIO
+import random
+import time
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+import torch.cuda.amp as amp
+
+# Download and extract the ARC dataset
+def download_and_extract_arc():
+    arc_url = "https://github.com/fchollet/ARC/archive/master.zip"
+    print("Downloading ARC dataset...")
+    response = requests.get(arc_url)
+    zip_file = zipfile.ZipFile(BytesIO(response.content))
+    print("Extracting dataset...")
+    zip_file.extractall("/content/")
+    return '/content/ARC-AGI-master/data'
+
+# Function to load ARC tasks
+def load_tasks(directory):
+    tasks = {}
+    for filename in os.listdir(directory):
+        if filename.endswith('.json'):
+            with open(os.path.join(directory, filename), 'r') as f:
+                task = json.load(f)
+                tasks[filename[:-5]] = task
+    return tasks
+import os
+import json
+import numpy as np
+import matplotlib.pyplot as plt
+import torch
+from torch.utils.data import Dataset
+
+class ARCDataset(Dataset):
+    def __init__(self, tasks):
+        self.tasks = list(tasks.values())
+        self.task_ids = list(tasks.keys())
+
+    def __len__(self):
+        return len(self.tasks)
+
+    def __getitem__(self, idx):
+        task = self.tasks[idx]
+        task_id = self.task_ids[idx]
+
+        train_inputs = [torch.tensor(example['input'], dtype=torch.long) for example in task['train']]
+        train_outputs = [torch.tensor(example['output'], dtype=torch.long) for example in task['train']]
+        test_inputs = [torch.tensor(example['input'], dtype=torch.long) for example in task['test']]
+        test_outputs = [torch.tensor(example['output'], dtype=torch.long) for example in task['test']]
+
+        return {
+            'task_id': task_id,
+            'train': {
+                'inputs': train_inputs,
+                'outputs': train_outputs
+            },
+            'test': {
+                'inputs': test_inputs,
+                'outputs': test_outputs
+            }
+        }
+
+def visualize_task(task):
+    num_train = len(task['train']['inputs'])
+    num_test = len(task['test']['inputs'])
+    total_examples = num_train + num_test
+
+    fig, axes = plt.subplots(total_examples, 2, figsize=(10, 5 * total_examples))
+    if total_examples == 1:
+        axes = axes.reshape(1, -1)
+
+    for i in range(num_train):
+        axes[i, 0].imshow(task['train']['inputs'][i], cmap='tab20')
+        axes[i, 0].set_title(f"Train Input {i+1}")
+        axes[i, 0].axis('off')
+
+        axes[i, 1].imshow(task['train']['outputs'][i], cmap='tab20')
+        axes[i, 1].set_title(f"Train Output {i+1}")
+        axes[i, 1].axis('off')
+
+    for i in range(num_test):
+        axes[i + num_train, 0].imshow(task['test']['inputs'][i], cmap='tab20')
+        axes[i + num_train, 0].set_title(f"Test Input {i+1}")
+        axes[i + num_train, 0].axis('off')
+
+        axes[i + num_train, 1].imshow(task['test']['outputs'][i], cmap='tab20')
+        axes[i + num_train, 1].set_title(f"Test Output {i+1}")
+        axes[i + num_train, 1].axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+def load_tasks(directory):
+    tasks = {}
+    for filename in os.listdir(directory):
+        if filename.endswith('.json'):
+            with open(os.path.join(directory, filename), 'r') as f:
+                task = json.load(f)
+                tasks[filename[:-5]] = task
+    return tasks
 
 def visualize_grids(env):
     cmap = colors.ListedColormap(['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00',
@@ -36,3 +145,37 @@ def visualize_grids(env):
     
     plt.tight_layout()
     plt.show()
+
+def print_action_list(env):
+    print("List of Actions:")
+    for i, action in enumerate(env.primitives):
+        print(f"{i}: {action.__name__}")
+    print()
+
+def get_action_name(env, action_index):
+    return env.primitives[action_index].__name__
+
+import os
+
+def find_action_location(env, action_index):
+    action = env.primitives[action_index]
+
+    # Get the source file
+    try:
+        file_path = inspect.getfile(action)
+    except TypeError:
+        # This can happen for built-in functions
+        return f"Action {action.__name__} is a built-in function and has no file location."
+
+    # Get the line number
+    try:
+        line_number = inspect.getsourcelines(action)[1]
+    except OSError:
+        line_number = "unknown"
+
+    # Get relative path if it's in a subdirectory of the current working directory
+    cwd = os.getcwd()
+    if file_path.startswith(cwd):
+        file_path = os.path.relpath(file_path, cwd)
+
+    return f"Action {action.__name__} is defined in file: {file_path}, line: {line_number}"
