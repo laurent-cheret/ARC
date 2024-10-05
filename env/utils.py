@@ -116,7 +116,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
 
-def visualize_grids(env):
+def visualize_grids(env, img_index, action_name):
     cmap = colors.ListedColormap(['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00',
                                   '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25'])
     norm = colors.Normalize(vmin=0, vmax=9)
@@ -138,7 +138,7 @@ def visualize_grids(env):
         for i, grid_list in enumerate(env.current_grids):
             if grid_list:
                 axs[i].imshow(grid_list[0], cmap=cmap, norm=norm)
-                axs[i].set_title(f"Input {i+1}")
+                axs[i].set_title(f"Input {i+1} after action :'{action_name}'")
             else:
                 axs[i].axis('off')
             axs[i].set_xticks([])
@@ -160,7 +160,9 @@ def visualize_grids(env):
                 memory_index += 1
 
     plt.tight_layout()
-    plt.show()
+
+    # fig.savefig(os.path.join("output","figure_" + str(img_index) + ".png")) # for local dev
+    plt.show() # for Collab
 
 # The rest of your code (GridTransformationEnv class, etc.) remains the same
 
@@ -207,7 +209,7 @@ def visualize_demonstration(env, task_id):
     obs = env.reset(task_id)
     print(f"Demonstrating task: {task_id}")
     print("Initial state:")
-    visualize_grids(env)
+    visualize_grids(env, 0, 'INIT')
 
     total_reward = 0
 
@@ -224,7 +226,7 @@ def visualize_demonstration(env, task_id):
             print(f"Reward: {reward}")
             print(f"Done: {done}")
             print("State after action:")
-            visualize_grids(env)
+            visualize_grids(env, step, action_name)
             print("--------------------")
 
             if done:

@@ -138,7 +138,7 @@ class GridTransformationEnv(gym.Env):
         # Observation space: Dict space with current objective, task information, quantity error, color usage, and memory state
         self.observation_space = spaces.Dict({
             'current_objective': spaces.Box(low=-np.inf, high=np.inf, shape=(self.encoding_dim,), dtype=np.float32),
-            'current_step': spaces.Discrete(100),  # Assuming a maximum of 100 steps per episode
+            'current_step': spaces.Discrete(max_steps),  # Assuming a maximum of 100 steps per episode
             'num_train_examples': spaces.Discrete(11),  # Assuming a maximum of 10 training examples
             'quantity_error': spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
             'original_colors': spaces.Box(low=0, high=1, shape=(10,), dtype=np.int32),

@@ -21,5 +21,7 @@
   "e76a88a6": ["remove_color_5", "push", "reset_to_original", "paste", "logical_xor", "paste", "reverse_order", "move_obj_to_source", "push", "reset_to_original", "paste", "logical_or"],
   "ea786f4a": ["fill_dominant_color", "main_diagonal", "push", "rotate_90", "paste", "logical_or", "reverse_object_background"],
   "56dc2b01": ["identify_and_isolate_objects", "reorder_by_object_size", "collide", "push", "flip_horizontal", "flip_vertical", "remove_color_3", "paint_obj_8", "paste", "reverse_order", "paint_obj_3", "push", "add", "identify_and_isolate_objects", "reorder_by_object_size", "reverse_order", "collide", "paint_obj_8", "pop", "paste", "logical_or"],
-  "22eb0ac0": [""]
+  "22eb0ac0": ["separate_by_color", "connect_straight", "add"],
+
+  "05f2a901": ["identify_and_isolate_objects", "reorder_by_object_size", "collide", "add"]
 }
