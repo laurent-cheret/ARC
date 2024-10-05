@@ -12,11 +12,12 @@ import importlib
 import inspect
 from scipy.ndimage import label
 import logging
+import json
 
 
 # Add the directory to Python's sys.path
 # dsl_path = '/content/drive/MyDrive/ARC_CHALLENGE'
-dsl_path = '/'
+dsl_path = ''
 if dsl_path not in sys.path:
     sys.path.append(dsl_path)
 
@@ -102,7 +103,7 @@ class DeepAutoencoder(nn.Module):
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 class GridTransformationEnv(gym.Env):
-    def __init__(self, arc_dataset, memory_capacity=5, max_steps=50, demo_file='/content/drive/MyDrive/ARC_CHALLENGE/env/demonstrations.json'):
+    def __init__(self, arc_dataset, memory_capacity=5, max_steps=50, demo_file='env\demonstrations.json'):
         super(GridTransformationEnv, self).__init__()
 
         self.arc_dataset = arc_dataset
@@ -113,7 +114,7 @@ class GridTransformationEnv(gym.Env):
         # Load the autoencoder
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.autoencoder = DeepAutoencoder(input_dim=9000, d_model=256)  # Adjust parameters as needed
-        self.autoencoder.load_state_dict(torch.load('/content/drive/MyDrive/ARC_CHALLENGE/deep_arc_autoencoder_256.pth', map_location=self.device))
+        self.autoencoder.load_state_dict(torch.load('intuition_models\deep_arc_autoencoder_256.pth', map_location=self.device))
         self.autoencoder.to(self.device)
         self.autoencoder.eval()
         self.max_steps = max_steps
@@ -465,7 +466,7 @@ class GridTransformationEnv(gym.Env):
 
         return avg_width_diff, avg_height_diff
 
-    def load_demonstrations(self, file_path='/content/drive/MyDrive/ARC_CHALLENGE/env/demonstrations.json'):
+    def load_demonstrations(self, file_path='env\demonstrations.json'):
         with open(file_path, 'r') as f:
             demo_data = json.load(f)
 
@@ -505,17 +506,18 @@ class DummyEncoder:
 
 # Example usage:
 # Assuming you've already created your ARC dataset
-arc_dataset = ARCDataset(all_tasks)  # all_tasks should be defined earlier
+# arc_dataset = ARCDataset(all_tasks)  # all_tasks should be defined earlier
 
-encoder = DummyEncoder(encoding_dim=64)
-env = GridTransformationEnv(arc_dataset)
-env.print_action_names_and_indexes()
+# encoder = DummyEncoder(encoding_dim=64)
+# env = GridTransformationEnv(arc_dataset)
+# env.print_action_names_and_indexes()
+
 # Run an episode
-obs = env.reset()
-done = False
-total_reward = 0
+# obs = env.reset()
+# done = False
+# total_reward = 0
 
-step_count = 0
+# step_count = 0
 # while not done:
 #     action = env.action_space.sample()  # Replace with your action selection logic
 #     action_name = get_action_name(env, action)
