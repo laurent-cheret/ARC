@@ -99,9 +99,9 @@ import torch
 def collide(grid_lists):
     """
     Simulates collision between the first two objects in each grid list.
-    Objects from the first grid move linearly towards objects in the second grid until they touch.
+    Objects from the first grid move linearly (horizontally or vertically) towards objects in the second grid until they are one step away from touching.
     The moving object stays entirely within the grid and maintains its shape.
-    If they never touch or can't move, the original list is returned.
+    If they never get close enough to touch or can't move, the original list is returned.
     Objects can have different non-zero values (colors).
     """
     def process_grid_list(grid_list):
@@ -154,34 +154,34 @@ def collide(grid_lists):
             return new_grid
 
         def objects_touching(grid1, grid2):
-            return torch.any((grid1.roll(1, 0) | grid1.roll(-1, 0) | 
-                              grid1.roll(1, 1) | grid1.roll(-1, 1)) & (grid2 != 0))
+            return torch.any((grid1 != 0) & (grid2 != 0))
 
         from_point, to_point = find_closest_points(grid1, grid2)
         if from_point is None or to_point is None:
             return grid_list  # No collision possible
 
-        # Determine movement direction
-        direction = torch.sign(to_point - from_point)
-        if direction[0] != 0 and direction[1] != 0:
-            # If diagonal, choose the dimension with larger difference
-            if abs(to_point[0] - from_point[0]) > abs(to_point[1] - from_point[1]):
-                direction[1] = 0
-            else:
-                direction[0] = 0
+        # Determine movement direction (only linear movement allowed)
+        direction = torch.zeros(2, dtype=torch.int)
+        if abs(to_point[0] - from_point[0]) > abs(to_point[1] - from_point[1]):
+            direction[0] = torch.sign(to_point[0] - from_point[0]).item()
+        else:
+            direction[1] = torch.sign(to_point[1] - from_point[1]).item()
 
         collision_occurred = False
+        previous_grid1 = grid1.clone()
         while not objects_touching(grid1, grid2):
             new_grid1 = move_object(grid1, direction)
             if torch.equal(new_grid1, grid1):
                 break  # No more movement possible
+            previous_grid1 = grid1.clone()
             grid1 = new_grid1
             if objects_touching(grid1, grid2):
                 collision_occurred = True
+                grid1 = previous_grid1  # Move back one step
+                break
 
         if collision_occurred:
-            result_grid = torch.where(grid1 != 0, grid1, grid2)
-            return [result_grid] + grid_list[2:]  # Combine first two grids and keep the rest
+            return [grid1, grid2] + grid_list[2:]  # Return the grids one step before collision
         else:
             return grid_list  # Return original list if no collision occurred
 
