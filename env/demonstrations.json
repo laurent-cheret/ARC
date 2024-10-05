@@ -1,0 +1,26 @@
+{
+    "28e73c20": ["fill_0", "draw_spiral", "paint_obj_3"],
+    "3aa6fb7a": ["identify_and_isolate_objects", "fit_rectangle", "add", "push", "reset_to_original", "paste","pop","logical_xor","paint_obj_1", "push", "reset_to_original", "paste","pop", "add"],
+    "4258a5f9": ["draw_object_outlines", "push", "reset_to_original", "paste", "pop", "add"],
+    "8eb1be9a": ["fill_pattern"],
+    "b8825c91": ["remove_color_4", "diagonal", "push", "reset_to_original", "rotate_90","remove_color_4", "diagonal", "push", "reset_to_original", "rotate_180","remove_color_4", "diagonal", "paste", "pop", "paste", "pop", "logical_or", "logical_or", "push", "rotate_90", "push", "rotate_90", "push", "rotate_90", "paste","pop", "paste","pop", "paste", "pop", "logical_or", "logical_or", "logical_or" ],
+    "bdad9b1f": ["remove_color_2", "push", "flip_vertical", "paste", "pop", "add", "connect", "push", "reset_to_original", "remove_color_8", "push", "flip_horizontal", "paste", "pop", "add", "connect", "paste", "reverse_order", "push", "logical_and", "paint_obj_4", "paste", "pop", "paste", "logical_xor", "add"],
+    "d631b094": ["color_count"],
+    "f76d97a5": ["remove_color_5", "reverse_object_background"],
+    "e9614598": ["connect", "find_object_center", "paint_obj_3", "push", "move_obj_up", "push", "move_obj_down", "move_obj_right", "push", "move_obj_left", "move_obj_down","push", "move_obj_up", "move_obj_left","paste", "pop", "paste", "pop", "paste", "pop", "paste", "pop", "add", "push", "reset_to_original", "paste", "pop", "add"],
+    "d43fd935": ["find_common_obj", "push", "reset_to_original", "paste", "logical_xor", "paste", "connect_to_source"],
+    "6f8cd79b": ["fill_8", "drill_hole"],
+    "e26a3af2": ["separate_by_color", "denoise", "fit_rectangle", "forget_zero_grids", "reorder_by_object_size", "reverse_order", "logical_or", "reverse_order", "reverse_order", "logical_or", "reverse_order", "logical_or" ],
+    "dae9d2b5": ["separate_by_color", "forget", "push", "forget", "move_obj_right", "move_obj_right", "move_obj_right", "paste", "logical_or", "crop_objects", "paint_obj_6"],
+    "9172f3a0": ["resize_x3"],
+    "06df4c85": ["separate_by_color", "forget", "reorder_by_object_size", "forget", "connect_straight", "add", "push", "reset_to_original", "paste", "reverse_order", "logical_or"],
+    "88a10436": ["find_common_obj", "push", "reset_to_original", "paste", "logical_xor", "paste", "move_obj_to_source", "push", "reset_to_original", "paste", "logical_or"],
+    "a2fd1cf0": ["connect_regardless", "paint_obj_8", "push", "reset_to_original", "paste", "reverse_order", "logical_or"],
+    "a5313dff": ["find_holes", "push", "reset_to_original", "paste", "add"],
+    "ddf7fa4f": ["remove_color_5", "push", "reset_to_original", "paste", "logical_xor", "paste", "reverse_order", "paint_with_palette", "paste", "logical_or"],
+    "e76a88a6": ["remove_color_5", "push", "reset_to_original", "paste", "logical_xor", "paste", "reverse_order", "move_obj_to_source", "push", "reset_to_original", "paste", "logical_or"],
+    "ea786f4a": ["fill_dominant_color", "main_diagonal", "push", "rotate_90", "paste", "logical_or", "reverse_object_background"],
+    "56dc2b01": ["identify_and_isolate_objects", "reorder_by_object_size", "collide", "push", "flip_horizontal", "flip_vertical", "remove_color_3","paint_obj_8", "paste", "reverse_order", "paint_obj_3","push", "add", "identify_and_isolate_objects", "reorder_by_object_size", "reverse_order", "collide", "paint_obj_8", "pop", "paste", "logical_or"],
+    "22eb0ac0": [""]
+
+}
