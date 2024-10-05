@@ -17,4 +17,7 @@ arc_dataset = ARCDataset(all_tasks)
 
 env = GridTransformationEnv(arc_dataset)  # Initialize your environment
 task_id_to_visualize = "28e73c20"  # Replace with the task ID you want to visualize
-visualize_demonstration(env, task_id_to_visualize)
+# task_id_to_visualize = ""  # Replace with the task ID you want to visualize
+
+visualize_task(arc_dataset[0])
+# visualize_demonstration(env, task_id_to_visualize)
