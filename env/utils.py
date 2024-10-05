@@ -179,3 +179,45 @@ def find_action_location(env, action_index):
         file_path = os.path.relpath(file_path, cwd)
 
     return f"Action {action.__name__} is defined in file: {file_path}, line: {line_number}"
+
+def visualize_demonstration(env, task_id):
+    if task_id not in env.demonstrations:
+        print(f"No demonstration found for task: {task_id}")
+        return
+
+    # Reset the environment with the specific task
+    obs = env.reset(task_id)
+    print(f"Demonstrating task: {task_id}")
+    print("Initial state:")
+    visualize_grids(env)
+
+    total_reward = 0
+
+    # Iterate through each action in the demonstration
+    for step, action_index in enumerate(env.current_demonstration):
+        if 0 <= action_index < len(env.primitives_names):
+            action_name = env.primitives_names[action_index]
+
+            print(f"Step {step + 1}: Action {action_index} - {action_name}")
+
+            next_obs, reward, done, _ = env.step(action_index)
+            total_reward += reward
+
+            print(f"Reward: {reward}")
+            print(f"Done: {done}")
+            print("State after action:")
+            visualize_grids(env)
+            print("--------------------")
+
+            if done:
+                break
+        else:
+            print(f"Warning: Invalid action index {action_index} for task {task_id}")
+
+    print(f"Demonstration finished. Total reward: {total_reward}")
+    print(f"Final action sequence: {env.action_sequence}")
+
+# Usage
+env = GridTransformationEnv(arc_dataset)  # Initialize your environment
+task_id_to_visualize = "28e73c20"  # Replace with the task ID you want to visualize
+visualize_demonstration(env, task_id_to_visualize)
