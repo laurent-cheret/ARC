@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from scipy import ndimage
-from scipy.ndimage import label, binary_dilation
+from scipy.ndimage import label, binary_dilation, binary_fill_holes, binary_erosion
 import inspect
 
 
@@ -192,7 +192,6 @@ def find_corners(grid_lists):
     
     return [sum([process_single_grid(grid) for grid in grid_list], []) for grid_list in grid_lists]
 
-from scipy.ndimage import label
 
 def _paint_objects(grid_lists, color):
     """
@@ -348,10 +347,6 @@ def keep_smallest_obj(grid_lists):
 
     return [filter_smallest_objects(grid_list) for grid_list in grid_lists]
 
-
-import torch
-import numpy as np
-
 def move_obj_up(grid_lists):
     """
     Moves all non-zero elements in each grid up by one cell, wrapping around to the bottom if necessary.
@@ -412,10 +407,6 @@ def move_obj_right(grid_lists):
 
     return [[shift_right(grid) for grid in grid_list] for grid_list in grid_lists]
 
-    
-from scipy.ndimage import binary_dilation, binary_fill_holes
-
-from scipy.ndimage import binary_erosion
 
 def drill_hole(grid_lists):
     """
@@ -609,11 +600,6 @@ def reverse_object_background(grid_lists):
     return [[process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists]
 
 
-
-import torch
-import numpy as np
-from scipy.ndimage import label
-
 def _copy_object(grid, direction):
     """Helper function to copy objects in a specified direction while keeping the original."""
     if isinstance(grid, torch.Tensor):
@@ -690,9 +676,6 @@ def copy_obj_diag_bottom_right(grid_lists):
 def copy_obj_diag_bottom_left(grid_lists):
     return [[_copy_object(grid, 'down left') for grid in grid_list] for grid_list in grid_lists]
 
-import torch
-import numpy as np
-from scipy.ndimage import label
 
 def find_common_obj(grid_lists):
     """

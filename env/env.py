@@ -114,6 +114,7 @@ class GridTransformationEnv(gym.Env):
         # Load the autoencoder
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.autoencoder = DeepAutoencoder(input_dim=9000, d_model=256)  # Adjust parameters as needed
+        torch.serialization.add_safe_globals([{'DeepAutoencoder': DeepAutoencoder, 'TransformerEncoder': TransformerEncoder}])
         self.autoencoder.load_state_dict(torch.load('intuition_models\deep_arc_autoencoder_256.pth', map_location=self.device))
         self.autoencoder.to(self.device)
         self.autoencoder.eval()

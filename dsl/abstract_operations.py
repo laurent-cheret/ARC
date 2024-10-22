@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from collections import deque
 from scipy.ndimage import label, center_of_mass
-
+from scipy import stats
 
 # def collide(grid_lists):
 #     """
@@ -94,7 +94,6 @@ from scipy.ndimage import label, center_of_mass
 
 #     return [process_grid_list(grid_list) for grid_list in grid_lists]
 
-import torch
 
 def collide(grid_lists):
     """
@@ -291,14 +290,6 @@ def connect_straight(grid_lists):
 
     return [[process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists]
 
-
-import torch
-import numpy as np
-from scipy.ndimage import label
-
-import torch
-import numpy as np
-from scipy.ndimage import label
 
 def connect_to_source(grid_lists):
     """
@@ -745,7 +736,6 @@ def draw_spiral(grid_lists):
     return [[process_grid(grid) for grid in grid_list] for grid_list in grid_lists]
 
 
-from scipy.ndimage import label, center_of_mass
 
 def find_object_center(grid_lists):
     """
@@ -820,7 +810,6 @@ def find_object_center(grid_lists):
 
     return [[process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists]
 
-from scipy import stats
 
 def denoise(grid_lists):
     """
@@ -881,15 +870,6 @@ def denoise(grid_lists):
 
     return [[process_grid(grid) for grid in grid_list] for grid_list in grid_lists]
 
-from scipy.ndimage import label
-
-import torch
-import numpy as np
-from scipy.ndimage import label
-
-import torch
-import numpy as np
-from scipy.ndimage import label
 
 def paint_with_palette(grid_lists):
     """

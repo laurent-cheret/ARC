@@ -161,8 +161,8 @@ def visualize_grids(env, img_index, action_name):
 
     plt.tight_layout()
 
-    # fig.savefig(os.path.join("output","figure_" + str(img_index) + ".png")) # for local dev
-    plt.show() # for Collab
+    fig.savefig(os.path.join("output","fig_" + str(img_index) + "_" + str(action_name) + ".png")) # for local dev
+    # plt.show() # for Collab
 
 # The rest of your code (GridTransformationEnv class, etc.) remains the same
 

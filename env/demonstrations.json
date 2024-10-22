@@ -23,5 +23,6 @@
   "56dc2b01": ["identify_and_isolate_objects", "reorder_by_object_size", "collide", "push", "flip_horizontal", "flip_vertical", "remove_color_3", "paint_obj_8", "paste", "reverse_order", "paint_obj_3", "push", "add", "identify_and_isolate_objects", "reorder_by_object_size", "reverse_order", "collide", "paint_obj_8", "pop", "paste", "logical_or"],
   "22eb0ac0": ["separate_by_color", "connect_straight", "add"],
 
-  "05f2a901": ["identify_and_isolate_objects", "reorder_by_object_size", "collide", "add"]
+  "05f2a901": ["identify_and_isolate_objects", "reorder_by_object_size", "collide", "add"],
+  "00d62c1b": ["identify_and_isolate_objects", "find_holes", "remove_color_3", "paint_obj_4", "merge_grids", "push", "reset_to_original", "paste", "merge_grids"]
 }
