@@ -17,16 +17,9 @@ import json
 
 # Add the directory to Python's sys.path
 # dsl_path = '/content/drive/MyDrive/ARC_CHALLENGE'
-dsl_path = ''
+dsl_path = '/app/api'
 if dsl_path not in sys.path:
     sys.path.append(dsl_path)
-
-# Import primitive functions
-# from dsl.basic_transformations import *
-# from dsl.memory_operations import *
-# from dsl.color_operations import *
-# from dsl.critical_operations import *
-# from dsl.abstract_operations import *
 
 
 class ARCDataset(Dataset):
@@ -115,7 +108,11 @@ class GridTransformationEnv(gym.Env):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.autoencoder = DeepAutoencoder(input_dim=9000, d_model=256)  # Adjust parameters as needed
         torch.serialization.add_safe_globals([{'DeepAutoencoder': DeepAutoencoder, 'TransformerEncoder': TransformerEncoder}])
-        self.autoencoder.load_state_dict(torch.load('intuition_models\deep_arc_autoencoder_256.pth', map_location=self.device))
+
+        current_dir = os.path.dirname(os.path.abspath(__file__))    
+        encoder_path = os.path.join(current_dir, 'intuition_models\deep_arc_autoencoder_256.pth')
+
+        self.autoencoder.load_state_dict(torch.load(encoder_path, map_location=self.device))
         self.autoencoder.to(self.device)
         self.autoencoder.eval()
         self.max_steps = max_steps
@@ -152,9 +149,14 @@ class GridTransformationEnv(gym.Env):
         })
 
     def load_demonstrations(self, file_path):
-        with open(file_path, 'r') as f:
-            demos = json.load(f)
-        return demos
+        # with open(file_path, 'r') as f:
+        #     demos = json.load(f)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        demos_path = os.path.join(current_dir, 'demonstrations.json')
+        print(f"demospath : {demos_path}")
+
+        with open(demos_path, 'r') as f:
+            return demos
 
     def grid_to_tensor(self, grid):
         h, w = len(grid), len(grid[0])
@@ -184,13 +186,20 @@ class GridTransformationEnv(gym.Env):
     def load_all_primitives(self):
         primitives = []
         primitive_names = []
-        dsl_dir = os.path.join(dsl_path, 'dsl')
+      
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        dsl_dir = os.path.abspath(os.path.join(current_dir, '..', 'dsl'))
+        api_dir = os.path.abspath(os.path.join(current_dir, '..'))
+        if api_dir not in sys.path:
+            sys.path.append(api_dir)
 
         # First, collect all primitives and their names
         for filename in os.listdir(dsl_dir):
-            if filename.endswith('.py'):
-                module_name = f'dsl.{filename[:-3]}'
+            if filename.endswith('.py') and filename != '__init__.py':  # Exclude __init__.py
+                module_name = f'dsl.{filename[:-3]}'  # Strip '.py' extension to get module name
+                print(f"Importing module: {module_name}")
                 module = importlib.import_module(module_name)
+
                 for name, obj in inspect.getmembers(module):
                     if inspect.isfunction(obj):
                         # Check if the function is defined in the current module
@@ -467,8 +476,14 @@ class GridTransformationEnv(gym.Env):
 
         return avg_width_diff, avg_height_diff
 
+
+    # Not used ?
     def load_demonstrations(self, file_path='env\demonstrations.json'):
-        with open(file_path, 'r') as f:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        demos_path = os.path.join(current_dir, 'demonstrations.json')
+        print(f"demospath : {demos_path}")
+
+        with open(demos_path, 'r') as f:
             demo_data = json.load(f)
 
         demonstrations = {}
