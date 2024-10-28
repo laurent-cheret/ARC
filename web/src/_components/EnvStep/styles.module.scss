@@ -1,0 +1,21 @@
+$gap-color: rgba(59, 59, 59, 0.5);
+
+.envOutput :global {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+
+  .examples-container {
+    display: flex;
+    gap: 20px;
+
+    max-width: 80%;
+    overflow: scroll;
+
+    .grid-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+}

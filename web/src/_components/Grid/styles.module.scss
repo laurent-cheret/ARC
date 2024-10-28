@@ -1,0 +1,51 @@
+$gap-color: rgba(59, 59, 59, 0.5);
+
+.taskGrid :global {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  min-height: 200px;
+  // gap: 1px;
+  // background-color: $gap-color;
+
+  .row {
+    display: flex;
+    flex: 1;
+
+    .cell {
+      flex: 1;
+      border: 1px solid $gap-color;
+
+      &.c0 {
+        background-color: black;
+      }
+      &.c1 {
+        background-color: rgb(30, 147, 255);
+      }
+      &.c2 {
+        background-color: rgb(249, 60, 49);
+      }
+      &.c3 {
+        background-color: rgb(79, 204, 48);
+      }
+      &.c4 {
+        background-color: rgb(255, 220, 0);
+      }
+      &.c5 {
+        background-color: rgb(153, 153, 153);
+      }
+      &.c6 {
+        background-color: rgb(229, 58, 163);
+      }
+      &.c7 {
+        background-color: rgb(255, 133, 27);
+      }
+      &.c8 {
+        background-color: rgb(135, 216, 241);
+      }
+      &.c9 {
+        background-color: rgb(146, 18, 49);
+      }
+    }
+  }
+}
