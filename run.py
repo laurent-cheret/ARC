@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 import sys
 import os
 import torch
@@ -53,6 +53,12 @@ def reset(task_id):
 @app.route("/demonstration/step/<task_id>", methods=["GET"])
 def demo_step(task_id):
     return utils.step_demonstration(env, task_id)
+
+
+@app.route("/demonstration/set-new-list/<task_id>", methods=["POST"])
+def set_new_demo_list(task_id):
+    data = request.get_json()
+    return utils.set_new_demo_list(env, task_id, data)
 
 
 # @app.route("/demonstration/step-task", methods=['GET'])

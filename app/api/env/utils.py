@@ -321,6 +321,25 @@ def tensors_to_json(tensor_list):
     return json.dumps(json_serializable_list)
 
 
+def set_new_demo_list(env, task_id, data):
+    obs = env.reset(task_id)
+
+    new_demonstration_list = [
+        env.primitives_names.index(action)
+        for action in data
+        if action in env.primitives_names
+    ]
+
+    env.current_demonstration = new_demonstration_list
+
+    return {
+        "current_demonstration": env.current_demonstration,  # [50, 43, 88, 76, 60, 85, 96, 83, 60]
+        "primitives_names": env.primitives_names,
+        "data": data,
+        "NEW_current_demonstration": new_demonstration_list,
+    }
+
+
 def step_demonstration(env, task_id):
     if task_id not in env.demonstrations:
         print(f"No demonstration found for task: {task_id}")
