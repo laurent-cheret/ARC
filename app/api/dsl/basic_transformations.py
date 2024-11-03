@@ -192,12 +192,12 @@ def crop_right(grid_lists):
 
 def _logical_operation(grid_lists, operation):
     """
-    Applies a logical operation (OR, AND, XOR) to the first two grids in each grid list.
+    Applies a logical operation (OR, AND, XOR, NAND) to the first two grids in each grid list.
     If there are fewer than two grids, it returns the original grid list unchanged.
 
     Args:
     grid_lists (list of lists of torch.Tensor): The input grid lists.
-    operation (str): The logical operation to apply ('OR', 'AND', 'XOR').
+    operation (str): The logical operation to apply ('OR', 'AND', 'XOR', 'NAND').
 
     Returns:
     list of lists of torch.Tensor: Result of applying the logical operation to each grid list,
@@ -206,13 +206,13 @@ def _logical_operation(grid_lists, operation):
     def process_grid_list(grid_list):
         if len(grid_list) < 2:
             return grid_list
-        
+
         # Check if the first two grids have the same shape
         if grid_list[0].shape != grid_list[1].shape:
             return grid_list  # Different shapes, return original grid list
-        
+
         grid0, grid1 = grid_list[0], grid_list[1]
-        
+
         if operation == 'OR':
             result = torch.where(grid0 != 0, grid0, grid1)
         elif operation == 'AND':
@@ -221,7 +221,10 @@ def _logical_operation(grid_lists, operation):
             result = torch.where((grid0 != 0) & (grid1 == 0), grid0,
                                  torch.where((grid0 == 0) & (grid1 != 0), grid1,
                                              torch.zeros_like(grid0)))
-        
+        elif operation == 'NAND':
+            and_result = torch.where((grid0 != 0) & (grid1 != 0), grid0, torch.zeros_like(grid0))
+            result = torch.where(and_result == 0, torch.ones_like(grid0), torch.zeros_like(grid0))
+
         return [result] + grid_list[2:]  # Combine the result with the remaining grids
 
     return [process_grid_list(grid_list) for grid_list in grid_lists]
@@ -237,6 +240,10 @@ def logical_and(grid_lists):
 def logical_xor(grid_lists):
     """Applies logical XOR operation to the first two grids in each grid list."""
     return _logical_operation(grid_lists, 'XOR')
+
+def logical_nand(grid_lists):
+    """Applies logical NAND operation to the first two grids in each grid list."""
+    return _logical_operation(grid_lists, 'NAND')
 
 def _resize_grid(grid, scale_factor):
     """Helper function to resize a grid by a given scale factor."""

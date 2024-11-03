@@ -1,0 +1,59 @@
+
+ok == almost sure we have the primitives (good for adding to .json)
+ok? == _think_ we have the primitives, but good to check
+?? == not sure we have all primitives
+
+/++ Demo was added to json!
+
+--------------------------------------------------------------------
+
+3aa6fb7a ok but long
+3ac3eb23 checkered line (copy_obj_diag_bottom_right ?)
+/++ 60b61512 ok?
+/++ 6d75e8bb ok?
+855e0971 needs primitive (cut shortest horiz/vert path through obj hole)
+/++ ae3edfdc ok? (refactor collide method)
+b8825c91 ok but long
+
+/++ bb43febb ok?
+bd4472b8 ok? (get, rotate, extend)
+/++ bdad9b1f ok but long
+c3f564a4 ??
+e9614598 ok but long
+e9afcf9a ok? (need to make checkered pattern)
+/++ a699fb00 ok? (connect w red)
+95990924 ?? (need paint_diagonal_digit)
+29c11459 ok? (connect 2 digits w their own color?)
+e26a3af2 ok but long
+dae9d2b5 ok but long
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

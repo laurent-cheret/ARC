@@ -10,10 +10,11 @@ $gap-color: rgba(59, 59, 59, 0.5);
 
   .row {
     display: flex;
-    flex: 1;
 
     .cell {
-      flex: 1;
+      width: 25px;
+      height: 25px;
+
       border: 1px solid $gap-color;
 
       &.c0 {

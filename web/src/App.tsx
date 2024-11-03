@@ -11,15 +11,15 @@ function App() {
   const [stepOutputs, setStepOutputs] = useState<StepOutput[] | undefined>(undefined);
   const [demoActionList, setDemoActionList] = useState('identify_and_isolate_objects, add, reorder_by_object_size');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await resetToTrainingTask(taskId);
-      const task = await getTrainingTask(taskId);
-      setCurrentTask(task);
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await resetToTrainingTask(taskId);
+  //     const task = await getTrainingTask(taskId);
+  //     setCurrentTask(task);
+  //   };
 
-    fetchData().catch(console.error);
-  }, []);
+  //   fetchData().catch(console.error);
+  // }, []);
 
   const handleChangedTaskId = (e: any) => {
     setTaskId(e.target.value);

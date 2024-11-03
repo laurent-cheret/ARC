@@ -17,7 +17,7 @@ from scipy import stats
 
 #         original_grid1, original_grid2 = grid_list[0], grid_list[1]
 #         grid1, grid2 = original_grid1.clone(), original_grid2.clone()
-        
+
 #         if grid1.shape != grid2.shape:
 #             return grid_list  # Return original list if shapes don't match
 
@@ -61,7 +61,7 @@ from scipy import stats
 #             return new_grid
 
 #         def objects_touching(grid1, grid2):
-#             return torch.any((grid1.roll(1, 0) | grid1.roll(-1, 0) | 
+#             return torch.any((grid1.roll(1, 0) | grid1.roll(-1, 0) |
 #                               grid1.roll(1, 1) | grid1.roll(-1, 1)) & grid2)
 
 #         from_point, to_point = find_closest_points(grid1, grid2)
@@ -97,28 +97,66 @@ from scipy import stats
 
 def collide(grid_lists):
     """
-    Simulates collision between the first two objects in each grid list.
-    Objects from the first grid move linearly (horizontally or vertically) towards objects in the second grid until they are one step away from touching.
-    The moving object stays entirely within the grid and maintains its shape.
+    Simulates collision between objects in each grid list.
+    Objects from the first grid move linearly (horizontally or vertically) towards objects in the second grid.
+    Each separate part in grid0 moves independently based on its position relative to grid1.
+    Objects from grid0 move until they are one step away from touching grid1.
+    The moving objects stay entirely within the grid and maintain their shapes.
     If they never get close enough to touch or can't move, the original list is returned.
     Objects can have different non-zero values (colors).
     """
+
     def process_grid_list(grid_list):
         if len(grid_list) < 2:
-            return grid_list  # Return original list if there's nothing to collide
+            return grid_list
 
         original_grid1, original_grid2 = grid_list[0], grid_list[1]
-        grid1, grid2 = original_grid1.clone(), original_grid2.clone()
-        
-        if grid1.shape != grid2.shape:
-            return grid_list  # Return original list if shapes don't match
+        if original_grid1.shape != original_grid2.shape:
+            return grid_list
+
+        def find_connected_components(grid):
+            components = []
+            visited = torch.zeros_like(grid, dtype=torch.bool)
+
+            def flood_fill(i, j, value):
+                if (
+                    i < 0
+                    or i >= grid.shape[0]
+                    or j < 0
+                    or j >= grid.shape[1]
+                    or visited[i, j]
+                    or grid[i, j] != value
+                ):
+                    return set()
+
+                points = {(i, j)}
+                visited[i, j] = True
+
+                for di, dj in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                    points.update(flood_fill(i + di, j + dj, value))
+                return points
+
+            for i in range(grid.shape[0]):
+                for j in range(grid.shape[1]):
+                    if not visited[i, j] and grid[i, j] != 0:
+                        component_points = flood_fill(i, j, grid[i, j].item())
+                        if component_points:
+                            components.append((component_points, grid[i, j].item()))
+
+            return components
+
+        def create_component_grid(points, value, shape):
+            grid = torch.zeros(shape, dtype=original_grid1.dtype)
+            for i, j in points:
+                grid[i, j] = value
+            return grid
 
         def find_closest_points(grid1, grid2):
             points1 = torch.nonzero(grid1)
             points2 = torch.nonzero(grid2)
             if len(points1) == 0 or len(points2) == 0:
                 return None, None
-            distances = torch.cdist(points1.float(), points2.float(), p=1)  # Manhattan distance
+            distances = torch.cdist(points1.float(), points2.float(), p=1)
             min_distance_idx = distances.argmin()
             closest1 = points1[min_distance_idx // len(points2)]
             closest2 = points2[min_distance_idx % len(points2)]
@@ -138,7 +176,7 @@ def collide(grid_lists):
 
         def move_object(grid, direction):
             if not can_move(grid, direction):
-                return grid  # Can't move, return original grid
+                return grid
             new_grid = torch.zeros_like(grid)
             if direction[0] != 0:  # Vertical movement
                 if direction[0] > 0:  # Move down
@@ -155,36 +193,61 @@ def collide(grid_lists):
         def objects_touching(grid1, grid2):
             return torch.any((grid1 != 0) & (grid2 != 0))
 
-        from_point, to_point = find_closest_points(grid1, grid2)
-        if from_point is None or to_point is None:
-            return grid_list  # No collision possible
+        # Find all separate components in grid1
+        components = find_connected_components(original_grid1)
+        if not components:
+            return grid_list
 
-        # Determine movement direction (only linear movement allowed)
-        direction = torch.zeros(2, dtype=torch.int)
-        if abs(to_point[0] - from_point[0]) > abs(to_point[1] - from_point[1]):
-            direction[0] = torch.sign(to_point[0] - from_point[0]).item()
-        else:
-            direction[1] = torch.sign(to_point[1] - from_point[1]).item()
-
+        # Initialize result grid with zeros
+        result_grid = torch.zeros_like(original_grid1)
         collision_occurred = False
-        previous_grid1 = grid1.clone()
-        while not objects_touching(grid1, grid2):
-            new_grid1 = move_object(grid1, direction)
-            if torch.equal(new_grid1, grid1):
-                break  # No more movement possible
-            previous_grid1 = grid1.clone()
-            grid1 = new_grid1
-            if objects_touching(grid1, grid2):
-                collision_occurred = True
-                grid1 = previous_grid1  # Move back one step
-                break
+
+        # Process each component separately
+        for component_points, value in components:
+            # Create a grid for this component
+            component_grid = create_component_grid(
+                component_points, value, original_grid1.shape
+            )
+
+            # Find closest points between this component and grid2
+            from_point, to_point = find_closest_points(component_grid, original_grid2)
+            if from_point is None or to_point is None:
+                # If no collision possible for this component, keep it in original position
+                result_grid += component_grid
+                continue
+
+            # Determine movement direction for this component
+            direction = torch.zeros(2, dtype=torch.int)
+            if abs(to_point[0] - from_point[0]) > abs(to_point[1] - from_point[1]):
+                direction[0] = torch.sign(to_point[0] - from_point[0]).item()
+            else:
+                direction[1] = torch.sign(to_point[1] - from_point[1]).item()
+
+            # Move this component
+            current_grid = component_grid.clone()
+            previous_grid = current_grid.clone()
+
+            while not objects_touching(current_grid, original_grid2):
+                new_grid = move_object(current_grid, direction)
+                if torch.equal(new_grid, current_grid):
+                    # No more movement possible, use original position
+                    result_grid += component_grid
+                    break
+                previous_grid = current_grid.clone()
+                current_grid = new_grid
+                if objects_touching(current_grid, original_grid2):
+                    collision_occurred = True
+                    # Add the position one step before collision
+                    result_grid += previous_grid
+                    break
 
         if collision_occurred:
-            return [grid1, grid2] + grid_list[2:]  # Return the grids one step before collision
+            return [result_grid, original_grid2] + grid_list[2:]
         else:
-            return grid_list  # Return original list if no collision occurred
+            return grid_list
 
     return [process_grid_list(grid_list) for grid_list in grid_lists]
+
 
 def connect(grid_lists):
     """
@@ -239,6 +302,98 @@ def connect(grid_lists):
         return new_grid
 
     return [[process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists]
+
+import torch
+
+def _connect_all_horizontal(grid_lists, connect_color):
+    """
+    Connects objects of the same digit within each grid by drawing straight horizontal paths between them.
+    Objects are connected only if they share the same row.
+
+    Args:
+    grid_lists (list of lists of torch.Tensor): The input grid lists.
+    connect_color (int): The digit color to use for the connecting paths.
+
+    Returns:
+    list of lists of torch.Tensor: The grids with connections added.
+    """
+
+    def process_single_grid(grid):
+        def find_objects(grid):
+            objects = {}
+            for digit in torch.unique(grid):
+                if digit != 0:  # Ignore background
+                    objects[digit.item()] = torch.nonzero(grid == digit)
+            return objects
+
+        def can_connect(point1, point2):
+            # Only connect if the points are in the same row
+            return point1[0] == point2[0]
+
+        def draw_horizontal_path(from_point, to_point):
+            # Draw a horizontal path if points are in the same row
+            start, end = min(from_point[1], to_point[1]), max(
+                from_point[1], to_point[1]
+            )
+            path = [(from_point[0], i) for i in range(start + 1, end)]
+            return path
+
+        objects = find_objects(grid)
+        new_paths = []
+
+        for digit, points in objects.items():
+            if len(points) < 2:
+                continue  # No need to connect if there's only one object of this digit
+
+            # Try to connect all pairs of points in the same row
+            for i in range(len(points)):
+                for j in range(i + 1, len(points)):
+                    if can_connect(points[i], points[j]):
+                        path = draw_horizontal_path(points[i], points[j])
+                        new_paths.extend([(p, connect_color) for p in path])
+
+        # Apply new paths to the grid
+        new_grid = grid.clone()
+        for (x, y), color in new_paths:
+            if new_grid[x, y] == 0:  # Only draw on empty cells
+                new_grid[x, y] = color
+
+        return new_grid
+
+    return [
+        [process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists
+    ]
+
+def connect_all_horizontal_0(grid_lists):
+    return _connect_all_horizontal(grid_lists, 0)
+
+def connect_all_horizontal_1(grid_lists):
+    return _connect_all_horizontal(grid_lists, 1)
+
+def connect_all_horizontal_2(grid_lists):
+    return _connect_all_horizontal(grid_lists, 2)
+
+def connect_all_horizontal_3(grid_lists):
+    return _connect_all_horizontal(grid_lists, 3)
+
+def connect_all_horizontal_4(grid_lists):
+    return _connect_all_horizontal(grid_lists, 4)
+
+def connect_all_horizontal_5(grid_lists):
+    return _connect_all_horizontal(grid_lists, 5)
+
+def connect_all_horizontal_6(grid_lists):
+    return _connect_all_horizontal(grid_lists, 6)
+
+def connect_all_horizontal_7(grid_lists):
+    return _connect_all_horizontal(grid_lists, 7)
+
+def connect_all_horizontal_8(grid_lists):
+    return _connect_all_horizontal(grid_lists, 8)
+    
+def connect_all_horizontal_9(grid_lists):
+    return _connect_all_horizontal(grid_lists, 9)
+
 
 def connect_straight(grid_lists):
     """
@@ -734,7 +889,6 @@ def draw_spiral(grid_lists):
         return result
     
     return [[process_grid(grid) for grid in grid_list] for grid_list in grid_lists]
-
 
 
 def find_object_center(grid_lists):
