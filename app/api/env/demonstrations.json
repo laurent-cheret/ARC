@@ -5,7 +5,6 @@
   "8eb1be9a": ["fill_pattern"],
   "b8825c91": ["remove_color_4", "diagonal", "push", "reset_to_original", "rotate_90", "remove_color_4", "diagonal", "push", "reset_to_original", "rotate_180", "remove_color_4", "diagonal", "paste", "pop", "paste", "pop", "logical_or", "logical_or", "push", "rotate_90", "push", "rotate_90", "push", "rotate_90", "paste", "pop", "paste", "pop", "paste", "pop", "logical_or", "logical_or", "logical_or"],
   "bdad9b1f": ["remove_color_2", "push", "flip_vertical", "paste", "pop", "add", "connect", "push", "reset_to_original", "remove_color_8", "push", "flip_horizontal", "paste", "pop", "add", "connect", "paste", "reverse_order", "push", "logical_and", "paint_obj_4", "paste", "pop", "paste", "logical_xor", "add"],
-  "bdad9b1f": ["remove_color_8", "push", "flip_horizontal", "paste", "pop", "add", "connect_straight", "push", "reset_to_original", "remove_color_2", "push", "flip_vertical", "paste", "pop", "add", "connect_straight", "paste", "add", "push", "find_holes", "separate_by_color", "select_digit_1", "paint_obj_4", "paste", "add"], 
   "d631b094": ["color_count"],
   "f76d97a5": ["remove_color_5", "reverse_object_background"],
   "e9614598": ["connect", "find_object_center", "paint_obj_3", "push", "move_obj_up", "push", "move_obj_down", "move_obj_right", "push", "move_obj_left", "move_obj_down", "push", "move_obj_up", "move_obj_left", "paste", "pop", "paste", "pop", "paste", "pop", "paste", "pop", "add", "push", "reset_to_original", "paste", "pop", "add"],
@@ -37,5 +36,31 @@
   "e9afcf9a": ["separate_by_digit"],
   "a699fb00": ["connect_all_horizontal_2"], 
   "95990924": ["separate_by_digit"],
-  "29c11459": ["separate_by_digit"]
+  "29c11459": ["separate_by_digit"],
+
+  "6150a2bd": ["flip_horizontal", "flip_vertical"],
+  "623ea044": ["main_diagonal_through_points", "push", "reset_to_original", "diagonal_through_points", "paste", "logical_or"],
+  "99fa7670": ["separate_by_digit"],
+  "a3df8b1e": ["separate_by_digit"],
+  "ac0a08a4": ["resize_by_count"],
+
+  "11852cab": ["separate_by_digit"],
+  "6d58a25d": ["separate_by_digit"],
+  "aba27056": ["separate_by_digit"],
+  "ba26e723": ["separate_by_digit"],
+  "444801d8": ["separate_by_digit"],
+  "363442ee": ["remove_color_5", "identify_and_isolate_objects", "reorder_by_object_size", "push", "forget", "merge_grids", "paste", "pop", "reverse_order", "move_obj_to_source", "push", "reset_to_original", "paste", "logical_or"],
+  
+  "54d82841": ["separate_by_digit"],
+  "d5d6de2d": ["separate_by_digit"],
+  "ec883f72": ["separate_by_digit"],
+  "98cf29f8": ["separate_by_digit"],
+  "d9fac9be": ["separate_by_digit"],
+  "253bf280": ["separate_by_digit"],
+  "54d9e175": ["separate_by_digit"],
+  "694f12f3": ["separate_by_digit"],
+  "0962bcdd": ["separate_by_digit"],
+  "6e19193c": ["separate_by_digit"],
+  "a740d043": ["separate_by_digit"],
+  "c9f8e694": ["separate_by_digit"]
 }

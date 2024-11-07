@@ -1,6 +1,7 @@
 import numpy as np
 import inspect
 
+
 def push(env, grid_lists):
     """
     Pushes the first grid from each grid list onto the environment's memory stack,
@@ -14,6 +15,7 @@ def push(env, grid_lists):
         env.memory_state[0] = new_state
     return grid_lists
 
+
 def pop(env, grid_lists):
     """
     Removes the most recently added grids from the environment's memory stack,
@@ -25,12 +27,15 @@ def pop(env, grid_lists):
         env.memory_state[-1] = np.zeros(env.encoding_dim, dtype=np.float32)
     return grid_lists
 
+
 def paste(env, grid_lists):
     """
     Inserts the memorized grids at the beginning of corresponding grid lists,
     only if there are memorized grids and all grid lists are non-empty.
     """
-    if env.memory[0] is not None and all(len(grid_list) > 0 for grid_list in grid_lists):
+    if env.memory[0] is not None and all(
+        len(grid_list) > 0 for grid_list in grid_lists
+    ):
         result = []
         for i, grid_list in enumerate(grid_lists):
             if i < len(env.memory[0]) and env.memory[0][i] is not None:
@@ -39,6 +44,7 @@ def paste(env, grid_lists):
                 result.append(grid_list)
         return result
     return grid_lists
+
 
 # def push(env, grid_lists):
 #     """

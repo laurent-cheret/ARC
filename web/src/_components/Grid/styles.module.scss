@@ -3,17 +3,21 @@ $gap-color: rgba(59, 59, 59, 0.5);
 .taskGrid :global {
   display: flex;
   flex-direction: column;
-  min-width: 200px;
-  min-height: 200px;
-  // gap: 1px;
-  // background-color: $gap-color;
+  // width: 200px;
+  // height: 200px;
+  // max-width: 200px;
+  // max-height: 200px;
+  // flex: 1;
 
   .row {
     display: flex;
+    // flex: 1;
 
     .cell {
-      width: 25px;
-      height: 25px;
+      // flex: 1;
+      // aspect-ratio: 1;
+      width: 20px;
+      height: 20px;
 
       border: 1px solid $gap-color;
 
