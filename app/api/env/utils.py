@@ -346,14 +346,17 @@ def step_demonstration(env, task_id):
         print(f"No demonstration found for task: {task_id}")
         return
 
-    action_index = env.current_demonstration[env.current_step]
+    if env.current_step >= len(env.current_demonstration):
+        return "Reached end of demo"
 
-    next_obs, reward, done, _ = env.step(action_index)
+    action_index = env.current_demonstration[env.current_step]
+    env.step_without_intuition(action_index)
     action_name = env.primitives_names[action_index]
     grids = [tensors_to_json(gridList) for gridList in env.current_grids]
 
     return {
         "step": env.demonstration_step,
+        "max_steps": len(env.current_demonstration),
         "action_name": action_name,
         "current_grids": grids,
     }

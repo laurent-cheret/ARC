@@ -322,6 +322,45 @@ class GridTransformationEnv(gym.Env):
             print("No demonstration available for this task")
         return self._get_observation()
 
+    def reset_without_intuition(self, task_id=None):
+        self.action_sequence = []
+        if task_id is not None and task_id in self.arc_dataset.task_ids:
+            # Find the index corresponding to the specified task_id
+            task_idx = self.arc_dataset.task_ids.index(task_id)
+            self.current_task = self.arc_dataset[task_idx]
+            self.current_task_id = task_id
+        else:
+            # Select a random task from the dataset
+            task_idx = random.randint(0, len(self.arc_dataset) - 1)
+            self.current_task = self.arc_dataset[task_idx]
+            self.current_task_id = self.arc_dataset.task_ids[task_idx]
+        # # Check if there's a demonstration for this task
+        self.using_demonstration = self.current_task_id in self.demonstrations
+        self.current_demonstration = self.demonstrations.get(self.current_task_id, [])
+        self.demonstration_step = 0
+        self.initial_grids = [grid for grid in self.current_task["train"]["inputs"]]
+        self.current_grids = [[grid] for grid in self.initial_grids]
+        self.current_step = 0
+        # Compute initial encodings
+        self.initial_encodings = [self.encode_grid(grid) for grid in self.initial_grids]
+        self.output_encodings = [
+            self.encode_grid(grid) for grid in self.current_task["train"]["outputs"]
+        ]
+        # Compute original colors
+        self.original_colors = self._compute_color_usage(
+            self.initial_grids + self.current_task["train"]["outputs"]
+        )
+        # Clear memory
+        self.memory = [None] * self.memory_capacity
+        self.memory_state = np.zeros(
+            (self.memory_capacity, self.encoding_dim), dtype=np.float32
+        )
+        print(f"Now solving task: {self.current_task_id}")
+        if self.using_demonstration:
+            print(f"Using demonstration with {len(self.current_demonstration)} steps")
+        else:
+            print("No demonstration available for this task")
+
     def step(self, action_index):
         if self.using_demonstration and self.demonstration_step < len(
             self.current_demonstration
@@ -358,6 +397,26 @@ class GridTransformationEnv(gym.Env):
                     f"Solved some of the {self.current_task_id} examples but not all."
                 )
         return self._get_observation(), reward, done, {}
+
+    def step_without_intuition(self, action_index):
+        if self.using_demonstration and self.demonstration_step < len(
+            self.current_demonstration
+        ):
+            demonstration_action = self.current_demonstration[self.demonstration_step]
+            if 0 <= demonstration_action < len(self.primitives):
+                action_index = demonstration_action
+            else:
+                print(
+                    f"Warning: Action index '{demonstration_action}' from demonstration is out of range"
+                )
+                # Keep the original action if the demonstration action is invalid
+            self.demonstration_step += 1
+            self.current_step += 1
+
+        action_name = self.primitives_names[action_index]
+        self.action_sequence.append(action_name)
+        # Apply the chosen primitive function to all current grids
+        self.current_grids = self.primitives[action_index](self.current_grids)
 
     def _compute_color_usage(self, grids):
         colors = set()
@@ -551,15 +610,6 @@ class GridTransformationEnv(gym.Env):
             return None
         actions = self.demonstrations[self.current_task_id]
         return actions[min(self.current_step, len(actions) - 1)]
-
-
-class DummyEncoder:
-    def __init__(self, encoding_dim=64):
-        self.encoding_dim = encoding_dim
-
-    def __call__(self, grid):
-        # This is a placeholder encoder. Replace with your actual encoder.
-        return torch.randn(self.encoding_dim)
 
 
 # Example usage:

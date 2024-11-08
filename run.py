@@ -57,7 +57,7 @@ def demonstration(task_id):
 
 @app.route("/demonstration/reset/<task_id>", methods=["GET"])
 def reset(task_id):
-    obs = env.reset(task_id)
+    env.reset_without_intuition(task_id)
     return f"Reset to {task_id}"
 
 
