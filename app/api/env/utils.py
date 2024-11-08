@@ -19,24 +19,27 @@ import torch.cuda.amp as amp
 def extract_arc_from_local():
     # Get the directory where the current script is located
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    zip_file_path = os.path.join(
-        current_dir, "ARC-AGI-master.zip"
-    )  # Name of the ZIP file
+    zip_file_path = os.path.join(current_dir, "ARC-AGI-master.zip")
+    extract_path = os.path.join(
+        current_dir, "ARC-AGI-master", "data"
+    )  # Directory for extracted data
+
     print(f"Looking for ZIP file in: {zip_file_path}")
 
+    # Check if ZIP file exists
     if not os.path.isfile(zip_file_path):
         raise FileNotFoundError(f"ZIP file not found: {zip_file_path}")
+    # Check if data is already extracted
+    if os.path.isdir(extract_path):
+        print(f"Data already extracted at: {extract_path}")
+        return extract_path
 
+    # Extract the data if it's not already present
     print(f"Extracting dataset from {zip_file_path}...")
     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
-        zip_ref.extractall(
-            current_dir
-        )  # Extract to the current directory (or change as needed)
+        zip_ref.extractall(current_dir)
     print("Extraction complete.")
-
-    return os.path.join(
-        current_dir, "ARC-AGI-master", "data"
-    )  # Adjust the path as needed
+    return extract_path
 
 
 # Download and extract the ARC dataset
