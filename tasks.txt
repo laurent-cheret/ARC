@@ -27,12 +27,14 @@ e9afcf9a ok? (need to make checkered pattern)
 e26a3af2 ok but long
 dae9d2b5 ok but long
 
-99fa7670 ?? (need rearrange obj based on height in grid)
-a3df8b1e ?? (need diagonal that bounces on grid)
-11852cab ?? (need complete symmetry)
-6d58a25d ??
+/++ 99fa7670 ?? (need rearrange obj based on height in grid)
+/++ a3df8b1e ?? (need diagonal that bounces on grid)
+/++ 11852cab ?? (need complete symmetry)
+/++ 6d58a25d ??
 ba26e723 ?? (change color every X columns/rows ?)
 444801d8 ?? (fill object w specific color)
+54d82841 ?? (fill rect w specific color)
+
 
 
 
@@ -43,7 +45,10 @@ ba26e723 ?? (change color every X columns/rows ?)
 Notes :
   "bdad9b1f": ["remove_color_8", "push", "flip_horizontal", "paste", "pop", "add", "connect_straight", "push", "reset_to_original", "remove_color_2", "push", "flip_vertical", "paste", "pop", "add", "connect_straight", "paste", "add", "push", "find_holes", "separate_by_color", "select_digit_1", "paint_obj_4", "paste", "add"], 
 
-  for grid CSS ac0a08a4
+TODO: logical_or could merge all subgrids
+TODO: web API should not calculate observation space for each demo_step
+
+for grid CSS ac0a08a4
 
 
 

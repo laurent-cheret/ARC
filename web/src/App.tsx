@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
-import { getTrainingTask, resetToTrainingTask, setNewDemoList, stepDemonstration } from './lib/api';
+import {
+  getAllTaskIds,
+  getClosestTasks,
+  getTrainingTask,
+  resetToTrainingTask,
+  setNewDemoList,
+  stepDemonstration,
+} from './lib/api';
 import Grid from './_components/Grid/Grid';
 import { StepOutput, Task } from './types/types';
 import EnvStep from './_components/EnvStep/EnvStep';
@@ -19,6 +26,15 @@ function App() {
   //   };
 
   //   fetchData().catch(console.error);
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     // await getAllTaskIds();
+  //     await getClosestTasks();
+  //   };
+
+  //   fetchData();
   // }, []);
 
   const handleChangedTaskId = (e: any) => {

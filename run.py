@@ -29,6 +29,17 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
+@app.route("/task_ids", methods=["GET"])
+def get_task_ids():
+    return list(training_tasks.keys()) + list(evaluation_tasks.keys())
+    # return env.arc_dataset.task_ids
+
+
+@app.route("/closest_tasks", methods=["GET"])
+def get_closest_tasks():
+    return utils.find_closest_tasks(env, "48f8583b")
+
+
 @app.route("/dataset/training/<task_id>", methods=["GET"])
 def get_training_task(task_id):
     return training_tasks[task_id]

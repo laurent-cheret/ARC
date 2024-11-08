@@ -3,6 +3,20 @@ import { StepOutput, Task } from '../types/types';
 // export const API_ROOT = 'http://127.0.0.1:5000';
 export const API_ROOT = 'api';
 
+export async function getAllTaskIds(): Promise<any> {
+  const result = await fetch(`${API_ROOT}/task_ids`, {
+    method: 'GET',
+  });
+  return await result.json();
+}
+
+export async function getClosestTasks(): Promise<any> {
+  const result = await fetch(`${API_ROOT}/closest_tasks`, {
+    method: 'GET',
+  });
+  return await result.json();
+}
+
 export async function getTrainingTask(taskId: string): Promise<Task> {
   const result = await fetch(`${API_ROOT}/dataset/training/${taskId}`, {
     method: 'GET',

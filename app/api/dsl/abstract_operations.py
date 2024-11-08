@@ -1081,3 +1081,127 @@ def paint_with_palette(grid_lists):
     except Exception as e:
         print(f"Error in paint_with_palette: {e}. Returning original grid lists.")
         return grid_lists
+
+
+def extend_cell_vertically(grid_lists):
+    """
+    Finds isolated non-zero cells (using 8-connectivity) and extends them vertically
+    until reaching a border or another object.
+    """
+
+    def is_isolated_cell(grid, row, col):
+        """Helper to check if a cell is isolated using 8-connectivity"""
+        # Get the value of the cell
+        value = grid[row, col].item()
+        if value == 0:
+            return False
+
+        # Check all 8 neighbors
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                if dr == 0 and dc == 0:
+                    continue
+                r, c = row + dr, col + dc
+                if (
+                    0 <= r < grid.size(0)
+                    and 0 <= c < grid.size(1)
+                    and grid[r, c] == value
+                ):
+                    return False
+        return True
+
+    def process_single_grid(grid):
+        new_grid = grid.clone()
+        height, width = grid.size()
+
+        # Find all non-zero cells
+        nonzero = torch.nonzero(grid)
+
+        # Process each non-zero cell
+        for pos in nonzero:
+            row, col = pos[0].item(), pos[1].item()
+            value = grid[row, col].item()
+
+            # Check if it's an isolated cell
+            if not is_isolated_cell(grid, row, col):
+                continue
+
+            # Extend upward
+            current_row = row - 1
+            while current_row >= 0 and grid[current_row, col] == 0:
+                new_grid[current_row, col] = value
+                current_row -= 1
+
+            # Extend downward
+            current_row = row + 1
+            while current_row < height and grid[current_row, col] == 0:
+                new_grid[current_row, col] = value
+                current_row += 1
+
+        return new_grid
+
+    return [
+        [process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists
+    ]
+
+
+def extend_cell_horizontally(grid_lists):
+    """
+    Finds isolated non-zero cells (using 8-connectivity) and extends them horizontally
+    until reaching a border or another object.
+    """
+
+    def is_isolated_cell(grid, row, col):
+        """Helper to check if a cell is isolated using 8-connectivity"""
+        # Get the value of the cell
+        value = grid[row, col].item()
+        if value == 0:
+            return False
+
+        # Check all 8 neighbors
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                if dr == 0 and dc == 0:
+                    continue
+                r, c = row + dr, col + dc
+                if (
+                    0 <= r < grid.size(0)
+                    and 0 <= c < grid.size(1)
+                    and grid[r, c] == value
+                ):
+                    return False
+        return True
+
+    def process_single_grid(grid):
+        new_grid = grid.clone()
+        height, width = grid.size()
+
+        # Find all non-zero cells
+        nonzero = torch.nonzero(grid)
+
+        # Process each non-zero cell
+        for pos in nonzero:
+            row, col = pos[0].item(), pos[1].item()
+            value = grid[row, col].item()
+
+            # Check if it's an isolated cell
+            if not is_isolated_cell(grid, row, col):
+                continue
+
+            # Extend left
+            current_col = col - 1
+            while current_col >= 0 and grid[row, current_col] == 0:
+                new_grid[row, current_col] = value
+                current_col -= 1
+
+            # Extend right
+            current_col = col + 1
+            while current_col < width and grid[row, current_col] == 0:
+                new_grid[row, current_col] = value
+                current_col += 1
+
+        return new_grid
+
+    return [
+        [process_single_grid(grid) for grid in grid_list] for grid_list in grid_lists
+    ]

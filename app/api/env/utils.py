@@ -144,7 +144,8 @@ def visualize_task(task):
 
 def load_tasks(directory):
     tasks = {}
-    for filename in os.listdir(directory):
+    filenames = sorted(os.listdir(directory))
+    for filename in filenames:
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), "r") as f:
                 task = json.load(f)
@@ -356,3 +357,23 @@ def step_demonstration(env, task_id):
         "action_name": action_name,
         "current_grids": grids,
     }
+
+
+# def find_closest_tasks(env, task_id, distance_matrix, n=5):
+def find_closest_tasks(env, task_id, n=5):
+    all_task_ids = env.arc_dataset.task_ids
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    distance_matrix_path = os.path.join(current_dir, "arc_distance_matrix_10.npy")
+    print(f"Looking for distance_matrix in: {distance_matrix_path}")
+
+    distance_matrix = np.load(distance_matrix_path)
+
+    task_index = all_task_ids.index(task_id)
+    distances = distance_matrix[task_index]
+    closest_indices = np.argsort(distances)[
+        1 : n + 1
+    ]  # Exclude the task itself (index 0)
+    closest_tasks = [all_task_ids[i] for i in closest_indices]
+    closest_distances = distances[closest_indices]
+    return list(zip(closest_tasks, closest_distances))

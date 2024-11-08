@@ -40,17 +40,17 @@
 
   "6150a2bd": ["flip_horizontal", "flip_vertical"],
   "623ea044": ["main_diagonal_through_points", "push", "reset_to_original", "diagonal_through_points", "paste", "logical_or"],
-  "99fa7670": ["separate_by_digit"],
-  "a3df8b1e": ["separate_by_digit"],
+  "99fa7670": ["move_objects_rightwards", "object_draw_line_downwards", "push", "reset_to_original", "paste", "logical_or", "connect_straight"],
+  "a3df8b1e": ["draw_diagonal_rebound_upright"],
   "ac0a08a4": ["resize_by_count"],
 
-  "11852cab": ["separate_by_digit"],
-  "6d58a25d": ["separate_by_digit"],
+  "11852cab": ["flip_objects_horizontally", "push", "flip_objects_vertically", "push", "flip_objects_horizontally", "push", "reset_to_original", "paste", "pop", "paste", "pop", "paste", "pop", "logical_or", "logical_or", "logical_or"],
+  "6d58a25d": ["identify_and_isolate_objects", "reorder_by_object_size", "push", "forget", "add", "paste", "keep_shared_columns", "paste", "logical_xor", "paste", "keep_rows_below", "extend_cell_vertically", "push", "reset_to_original", "paste", "logical_or"],
   "aba27056": ["separate_by_digit"],
   "ba26e723": ["separate_by_digit"],
   "444801d8": ["separate_by_digit"],
   "363442ee": ["remove_color_5", "identify_and_isolate_objects", "reorder_by_object_size", "push", "forget", "merge_grids", "paste", "pop", "reverse_order", "move_obj_to_source", "push", "reset_to_original", "paste", "logical_or"],
-  
+
   "54d82841": ["separate_by_digit"],
   "d5d6de2d": ["separate_by_digit"],
   "ec883f72": ["separate_by_digit"],
