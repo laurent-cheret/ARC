@@ -325,6 +325,30 @@ def tensors_to_json(tensor_list):
     return json.dumps(json_serializable_list)
 
 
+def memory_grids_to_json(memory_grids):
+    """
+    Converts a list of memory grids, where each item can be a sublist of tensors or None, into a JSON-compatible format.
+    If an item is None, it is replaced with an empty list in the returned JSON structure.
+
+    Args:
+    memory_grids (list): A list containing None or sublists of torch.Tensor objects.
+
+    Returns:
+    str: JSON-formatted string representing the memory grids.
+    """
+    json_compatible_grids = []
+
+    for grid in memory_grids:
+        if grid is None:
+            json_compatible_grids.append([])  # Replace None with an empty list
+        else:
+            # Convert each tensor in the sublist to a list format
+            tensor_list = [tensor.tolist() for tensor in grid]
+            json_compatible_grids.append(tensor_list)
+
+    return json.dumps(json_compatible_grids)
+
+
 def set_new_demo_list(env, task_id, data):
     obs = env.reset(task_id)
 
@@ -344,13 +368,40 @@ def set_new_demo_list(env, task_id, data):
     }
 
 
+def step_all_demonstration(env, task_id):
+    if task_id not in env.demonstrations:
+        print(f"No demonstration found for task: {task_id}")
+        return
+
+    results = []
+    while env.current_step < len(env.current_demonstration):
+
+        action_index = env.current_demonstration[env.current_step]
+        env.step_without_intuition(action_index)
+        action_name = env.primitives_names[action_index]
+        grids = [tensors_to_json(gridList) for gridList in env.current_grids]
+        mem_grids = memory_grids_to_json(env.memory)
+
+        results.append(
+            {
+                "step": env.demonstration_step,
+                "max_steps": len(env.current_demonstration),
+                "action_name": action_name,
+                "current_grids": grids,
+                "memory_grids": mem_grids,
+            }
+        )
+
+    return results
+
+
 def step_demonstration(env, task_id):
     if task_id not in env.demonstrations:
         print(f"No demonstration found for task: {task_id}")
         return
 
     if env.current_step >= len(env.current_demonstration):
-        return "Reached end of demo"
+        return "Reached end of demo", 400
 
     action_index = env.current_demonstration[env.current_step]
     env.step_without_intuition(action_index)

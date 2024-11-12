@@ -324,16 +324,10 @@ class GridTransformationEnv(gym.Env):
 
     def reset_without_intuition(self, task_id=None):
         self.action_sequence = []
-        if task_id is not None and task_id in self.arc_dataset.task_ids:
-            # Find the index corresponding to the specified task_id
-            task_idx = self.arc_dataset.task_ids.index(task_id)
-            self.current_task = self.arc_dataset[task_idx]
-            self.current_task_id = task_id
-        else:
-            # Select a random task from the dataset
-            task_idx = random.randint(0, len(self.arc_dataset) - 1)
-            self.current_task = self.arc_dataset[task_idx]
-            self.current_task_id = self.arc_dataset.task_ids[task_idx]
+        # Find the index corresponding to the specified task_id
+        task_idx = self.arc_dataset.task_ids.index(task_id)
+        self.current_task = self.arc_dataset[task_idx]
+        self.current_task_id = task_id
         # # Check if there's a demonstration for this task
         self.using_demonstration = self.current_task_id in self.demonstrations
         self.current_demonstration = self.demonstrations.get(self.current_task_id, [])
@@ -342,24 +336,22 @@ class GridTransformationEnv(gym.Env):
         self.current_grids = [[grid] for grid in self.initial_grids]
         self.current_step = 0
         # Compute initial encodings
-        self.initial_encodings = [self.encode_grid(grid) for grid in self.initial_grids]
-        self.output_encodings = [
-            self.encode_grid(grid) for grid in self.current_task["train"]["outputs"]
-        ]
-        # Compute original colors
-        self.original_colors = self._compute_color_usage(
-            self.initial_grids + self.current_task["train"]["outputs"]
-        )
+        self.initial_encodings = []
+        self.output_encodings = []
         # Clear memory
         self.memory = [None] * self.memory_capacity
         self.memory_state = np.zeros(
             (self.memory_capacity, self.encoding_dim), dtype=np.float32
         )
-        print(f"Now solving task: {self.current_task_id}")
-        if self.using_demonstration:
-            print(f"Using demonstration with {len(self.current_demonstration)} steps")
-        else:
-            print("No demonstration available for this task")
+
+        demo_action_list = [
+            self.primitives_names[action_index]
+            for action_index in self.current_demonstration
+        ]
+
+        return {
+            "demo_action_list": demo_action_list,
+        }
 
     def step(self, action_index):
         if self.using_demonstration and self.demonstration_step < len(
