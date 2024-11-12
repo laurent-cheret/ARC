@@ -8,10 +8,10 @@ We propose that solving ARC lies in a combination of collective human effort to 
 <img src="https://github.com/user-attachments/assets/f04c9a97-64f9-4c19-aa79-8e1939336f52" width="65%">
 </div>
 
-
 # Setup
 
 ## Web interface
+
 Inside of the `/web` folder, run :
 
 ```
@@ -20,10 +20,12 @@ npm run dev
 ```
 
 ## Flask backend
+
 To run the Flask server :
 
 - make sure you have `\app\api\env\intuition_models\deep_arc_autoencoder_256.pth` file
 - make sure you have the [ARC dataset file](https://github.com/fchollet/ARC/archive/master.zip), and place it here: `\app\api\env\ARC-AGI-master.zip`
+- (optional) if deploying to a production environment, update session key in `config.py` file
 
 Activate Python virtualenv at the root of project :
 
@@ -31,11 +33,13 @@ Activate Python virtualenv at the root of project :
 py -3 -m venv .venv
 .venv\Scripts\activate
 ```
+
 Install requirements :
 
 ```
 pip install -r requirements.txt
 ```
+
 Run the Flask server in debug mode :
 
 ```
