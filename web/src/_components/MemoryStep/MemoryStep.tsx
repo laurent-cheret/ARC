@@ -10,6 +10,7 @@ const MemoryStep = forwardRef<HTMLDivElement, { stepOutput: StepOutput }>(({ ste
     <div className={styles.memOutput} ref={ref}>
       {isMemoryEmpty && (
         <div className="memory-empty">
+          {/* <img src="/empty_memory.png" alt="empty memory" /> */}
           <div className="on-surface-variant body-small">Empty</div>
         </div>
       )}
@@ -17,19 +18,25 @@ const MemoryStep = forwardRef<HTMLDivElement, { stepOutput: StepOutput }>(({ ste
       {!isMemoryEmpty && (
         <div className="examples-container hide-scroll">
           {stepOutput.memory_grids.map((gridsList: TaskGrid[], index: number) => (
-            <>
+            <div key={index}>
               {gridsList.length > 0 && (
-                <div className="grid-column" key={index}>
+                <div
+                  className="grid-column"
+                  key={index}
+                  onClick={(e) => {
+                    e.currentTarget.classList.toggle('rolled-out');
+                  }}
+                >
                   <>
                     {gridsList.map((grid: TaskGrid, index2: number) => (
-                      <div className="grid-container">
-                        <Grid taskGrid={grid} key={index2}></Grid>
+                      <div className="grid-container" key={`g-${index2}`}>
+                        <Grid taskGrid={grid}></Grid>
                       </div>
                     ))}
                   </>
                 </div>
               )}
-            </>
+            </div>
           ))}
         </div>
       )}

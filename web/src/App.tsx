@@ -46,11 +46,6 @@ function App() {
     fetchData().catch(console.error);
   }, []);
 
-  const handleSetDemoList = async () => {
-    setStepOutputs([]);
-    await setNewDemoList(taskId, demoActionList);
-  };
-
   const handleStepAll2 = async () => {
     setLoadingDemo(true);
     await setNewDemoList(taskId, demoActionList);
@@ -86,11 +81,9 @@ function App() {
         <InputTaskSetter taskId={taskId} setTaskId={setTaskId}></InputTaskSetter>
 
         <AutoCompleteChipList
-          taskId={taskId}
           primitives={primitives}
           demoActions={demoActionList}
           setDemoActions={setDemoActionList}
-          handleSetDemoList={handleSetDemoList}
         ></AutoCompleteChipList>
 
         <TaskExamples task={currentTask}></TaskExamples>

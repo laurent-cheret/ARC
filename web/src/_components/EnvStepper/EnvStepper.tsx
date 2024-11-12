@@ -63,6 +63,8 @@ export default function EnvStepper({ loadingDemo, stepOutputs }: { loadingDemo: 
         <div className={styles.stepper}>
           <div className={styles.envStepper}>
             <div className="steps-container">
+              {stepOutputs.length == 0 && <img src="/empty_stepper.png" alt="empty stepper" />}
+
               {stepOutputs.map((stepOutput, index) => (
                 <EnvStep
                   key={index}
@@ -115,7 +117,7 @@ export default function EnvStepper({ loadingDemo, stepOutputs }: { loadingDemo: 
             <div className="memory-aside">
               {stepOutputs.map((stepOutput, index) => (
                 <MemoryStep
-                  key={index}
+                  key={`mem-${index}`}
                   stepOutput={stepOutput}
                   ref={(node) => {
                     const mapMem = getMapMem();

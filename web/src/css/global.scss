@@ -69,21 +69,44 @@ button {
 
 .btn-primary {
   @extend .primary-container;
+  &:disabled {
+    cursor: unset;
+    opacity: 0.4;
+  }
   &:hover {
     background-color: color-mix(in srgb, var(--primaryContainer), var(--onPrimaryContainer) 8%);
   }
-  &:active {
+  &:active,
+  &:focus {
     background-color: color-mix(in srgb, var(--primaryContainer), var(--onPrimaryContainer) 10%);
   }
 }
 
 .btn-secondary {
   @extend .secondary-container;
+  &:disabled {
+    cursor: unset;
+    opacity: 0.4;
+  }
   &:hover {
     background-color: color-mix(in srgb, var(--secondaryContainer), var(--onSecondaryContainer) 8%);
   }
   &:active {
     background-color: color-mix(in srgb, var(--secondaryContainer), var(--onSecondaryContainer) 10%);
+  }
+}
+
+.btn-tertiary {
+  @extend .tertiary-container;
+  &:disabled {
+    cursor: unset;
+    opacity: 0.4;
+  }
+  &:hover {
+    background-color: color-mix(in srgb, var(--tertiaryContainer), var(--onTertiaryContainer) 8%);
+  }
+  &:active {
+    background-color: color-mix(in srgb, var(--tertiaryContainer), var(--onTertiaryContainer) 10%);
   }
 }
 

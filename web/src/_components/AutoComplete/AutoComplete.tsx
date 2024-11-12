@@ -1,4 +1,4 @@
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Chip, TextField } from '@mui/material';
 
 export default function AutoCompleteChipList({
   primitives,
@@ -25,6 +25,22 @@ export default function AutoCompleteChipList({
         size="small"
         isOptionEqualToValue={() => false}
         renderInput={(params) => <TextField {...params} label="DSL action list" placeholder="DSL actions list" />}
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip
+              label={option}
+              {...getTagProps({ index })}
+              key={index}
+              sx={{
+                bgcolor: 'var(--secondaryContainer)',
+                color: 'var(--onSecondaryContainer)',
+                '& .MuiChip-deleteIcon': {
+                  color: 'var(--onSecondaryContainer)',
+                },
+              }}
+            />
+          ))
+        }
       />
     </>
   );

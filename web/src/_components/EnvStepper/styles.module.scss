@@ -26,7 +26,7 @@ $stepper-height: 400px;
   }
 }
 
-$width-aside: 20%;
+$width-aside: 15%;
 
 .stepper :global {
   display: flex;
@@ -71,6 +71,12 @@ $width-aside: 20%;
     overflow-x: hidden;
     scroll-snap-type: x mandatory;
     height: 400px;
+
+    img {
+      width: 97%;
+      object-fit: cover;
+      object-position: left top;
+    }
   }
 
   .commands {

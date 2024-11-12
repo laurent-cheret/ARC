@@ -14,6 +14,10 @@ export default function TaskExamples({ task }: { task: Task | undefined }) {
             </div>
           </div>
 
+          <span className={['material-symbols-outlined', 'icon', 'on-surface-variant'].join(' ')}>
+            keyboard_double_arrow_down
+          </span>
+
           <div>
             <h5 className="title on-surface-variant body-medium">Output {index}</h5>
             <div className="grid-container">
