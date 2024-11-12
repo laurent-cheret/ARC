@@ -23,9 +23,9 @@ npm run dev
 
 To run the Flask server :
 
-- make sure you have `\app\api\env\intuition_models\deep_arc_autoencoder_256.pth` file
-- make sure you have the [ARC dataset file](https://github.com/fchollet/ARC/archive/master.zip), and place it here: `\app\api\env\ARC-AGI-master.zip`
-- (optional) if deploying to a production environment, update session key in `config.py` file
+- make sure you have the `\app\api\env\intuition_models\deep_arc_autoencoder_256.pth` file. You may need to install Git LFS and run `git lfs pull` after cloning the repo.
+- make sure you have the [ARC dataset file](https://github.com/fchollet/ARC/archive/master.zip), and place it here: `\app\api\env\ARC-AGI-master.zip`.
+- (optional) if deploying to a production environment, update session key in `config.py` file.
 
 Activate Python virtualenv at the root of project :
 
