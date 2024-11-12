@@ -1,69 +1,66 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import {
-  getAllTaskIds,
-  getClosestTasks,
-  getTrainingTask,
+  getPrimitiveNames,
   resetToTrainingTask,
   setNewDemoList,
+  stepAllDemonstration,
   stepDemonstration,
 } from './lib/api';
-import Grid from './_components/Grid/Grid';
 import { StepOutput, Task } from './types/types';
-import EnvStep from './_components/EnvStep/EnvStep';
+import { useStickyState } from './hooks/useStickyState';
+import InputTaskSetter from './_components/InputTaskSetter/InputTaskSetter';
+import TaskExamples from './_components/TaskExamples/TaskExamples';
+import AutoCompleteChipList from './_components/AutoComplete/AutoComplete';
+import EnvStepper from './_components/EnvStepper/EnvStepper';
 
 function App() {
-  const [taskId, setTaskId] = useState('00d62c1b');
-  const [currentTask, setCurrentTask] = useState<Task | null>(null);
-  const [stepOutputs, setStepOutputs] = useState<StepOutput[] | undefined>(undefined);
-  const [demoActionList, setDemoActionList] = useState('identify_and_isolate_objects, add, reorder_by_object_size');
+  const [taskId, setTaskId] = useStickyState('00d62c1b', 'currentTaskId');
+  const [currentTask, setCurrentTask] = useState<Task | undefined>(undefined);
+  const [stepOutputs, setStepOutputs] = useState<StepOutput[]>([]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     await resetToTrainingTask(taskId);
-  //     const task = await getTrainingTask(taskId);
-  //     setCurrentTask(task);
-  //   };
+  const [primitives, setPrimitives] = useState<string[]>([]);
+  const [demoActionList, setDemoActionList] = useState<string[]>([]);
 
-  //   fetchData().catch(console.error);
-  // }, []);
+  const [loadingDemo, setLoadingDemo] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // await getAllTaskIds();
-  //     await getClosestTasks();
-  //   };
+  // taskId update
+  useEffect(() => {
+    const fetchData = async () => {
+      const newTask = await resetToTrainingTask(taskId);
+      setCurrentTask(newTask);
+      setDemoActionList(newTask.demoActions);
+      setStepOutputs([]);
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchData().catch(console.error);
+  }, [taskId]);
 
-  const handleChangedTaskId = (e: any) => {
-    setTaskId(e.target.value);
-  };
-  const handleChangedActionList = (e: any) => {
-    setDemoActionList(e.target.value);
-  };
+  // fetch primitives list
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getPrimitiveNames();
+      setPrimitives(res.primitives);
+    };
 
-  // Function to handle button click
-  const handleClickReset = async () => {
-    await resetToTrainingTask(taskId);
-    const task = await getTrainingTask(taskId);
-    setCurrentTask(task);
+    fetchData().catch(console.error);
+  }, []);
+
+  const handleSetDemoList = async () => {
     setStepOutputs([]);
+    await setNewDemoList(taskId, demoActionList);
   };
 
-  const handleClickSetDemoList = async () => {
-    const actionsList = demoActionList.split(',').map((action) => action.replace(/"/g, '').trim());
-    console.log(actionsList);
-    await setNewDemoList(taskId, actionsList);
-    setStepOutputs([]);
-  };
+  const handleStepAll2 = async () => {
+    setLoadingDemo(true);
+    await setNewDemoList(taskId, demoActionList);
 
-  const handleClickSingleStep = async () => {
-    const result = await stepDemonstration(taskId);
+    const result = await stepAllDemonstration(taskId);
+    // console.log(result);
+
+    setLoadingDemo(false);
     if (result) {
-      console.log(result);
-      setStepOutputs(stepOutputs ? [...stepOutputs, result] : [result]);
+      setStepOutputs(result);
     }
   };
 
@@ -75,52 +72,35 @@ function App() {
         setStepOutputs((prevStepOutputs) =>
           prevStepOutputs ? [...prevStepOutputs, result as StepOutput] : [result as StepOutput]
         );
-        // window.scrollTo(0, document.body.scrollHeight);
       }
     } while (result);
   };
 
   return (
     <div className={styles.app}>
-      <h1>ARC primitive testing</h1>
+      <div className="main">
+        <h1 className="title-main display-medium" style={{ marginTop: 0 }}>
+          🕹️ ARCade Warriors DSL playground
+        </h1>
 
-      <div>
-        <input type="text" value={taskId} onChange={handleChangedTaskId} placeholder="Task ID" />
-        <button onClick={handleClickReset}>Reset to original demonstrations.json list</button>
+        <InputTaskSetter taskId={taskId} setTaskId={setTaskId}></InputTaskSetter>
+
+        <AutoCompleteChipList
+          taskId={taskId}
+          primitives={primitives}
+          demoActions={demoActionList}
+          setDemoActions={setDemoActionList}
+          handleSetDemoList={handleSetDemoList}
+        ></AutoCompleteChipList>
+
+        <TaskExamples task={currentTask}></TaskExamples>
+
+        <button className="btn-primary" style={{ marginBottom: '30px' }} onClick={handleStepAll2}>
+          Set actions and run demo
+        </button>
+
+        <EnvStepper loadingDemo={loadingDemo} stepOutputs={stepOutputs}></EnvStepper>
       </div>
-
-      <div className="demo-list">
-        <input type="text" value={demoActionList} onChange={handleChangedActionList} placeholder="Action list" />
-        <button onClick={handleClickSetDemoList}>Reset to new demonstration list</button>
-      </div>
-
-      {currentTask && (
-        <>
-          <h3>Current task : {taskId}</h3>
-
-          <div className="initial-state">
-            {currentTask?.train.map((example, index) => (
-              <div key={index} className="example-container">
-                <div>
-                  <h4>input {index}</h4>
-                  <Grid key="input" taskGrid={example.input}></Grid>
-                </div>
-                <div>
-                  <h4>output {index}</h4>
-                  <Grid key="output" taskGrid={example.output}></Grid>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {stepOutputs &&
-        stepOutputs.length > 0 &&
-        stepOutputs.map((stepOutput, index) => <EnvStep stepOutput={stepOutput} key={index}></EnvStep>)}
-
-      <button onClick={handleClickSingleStep}>Single Step</button>
-      <button onClick={handleClickStepAll}>Step ALL</button>
     </div>
   );
 }

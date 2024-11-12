@@ -1,36 +1,28 @@
 #root {
   padding: 2rem;
   text-align: center;
-  width: 100%;
 }
 
 .app :global {
-  max-width: 100vw;
-  padding: 2rem;
-
   display: flex;
-  flex-direction: column;
-  gap: 20px;
 
-  .demo-list {
-    width: 100%;
-    input {
-      width: 100%;
-    }
-  }
-
-  .initial-state {
+  .main {
     display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     gap: 20px;
-    width: 100%;
-    overflow-x: auto;
 
-    .example-container {
-      display: flex;
-      gap: 10px;
+    .title-main {
+      font-family: 'Pixelify Sans', sans-serif;
+      font-optical-sizing: auto;
+      color: var(--primary);
+      font-weight: 600;
+    }
 
-      h4 {
-        margin-bottom: 0;
+    .demo-list {
+      width: 100%;
+      input {
+        width: 100%;
       }
     }
   }

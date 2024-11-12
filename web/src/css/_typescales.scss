@@ -1,0 +1,58 @@
+$body-font-size: 1rem;
+$scale-ratio: 1.125;
+
+// Type scale, follows https://m3.material.io/styles/typography/type-scale-tokens
+@mixin display-large {
+  font-size: getFontSize($body-font-size, $scale-ratio, 12);
+}
+@mixin display-medium {
+  font-size: getFontSize($body-font-size, $scale-ratio, 10);
+}
+@mixin display-small {
+  font-size: getFontSize($body-font-size, $scale-ratio, 8);
+}
+
+@mixin headline-large {
+  font-size: getFontSize($body-font-size, $scale-ratio, 7);
+}
+@mixin headline-medium {
+  font-size: getFontSize($body-font-size, $scale-ratio, 6);
+}
+@mixin headline-small {
+  font-size: getFontSize($body-font-size, $scale-ratio, 5);
+}
+
+@mixin title-large {
+  font-size: getFontSize($body-font-size, $scale-ratio, 4);
+}
+@mixin title-medium {
+  font-size: getFontSize($body-font-size, $scale-ratio, 3);
+}
+@mixin title-small {
+  font-size: getFontSize($body-font-size, $scale-ratio, 2);
+}
+
+@mixin body-large {
+  font-size: getFontSize($body-font-size, $scale-ratio, 1);
+}
+@mixin body-medium {
+  font-size: getFontSize($body-font-size, $scale-ratio, 0);
+}
+@mixin body-small {
+  font-size: round(calc($body-font-size / pow($scale-ratio, 1)), 1px);
+}
+
+@mixin label-large {
+  font-size: round(calc($body-font-size / pow($scale-ratio, 1)), 1px);
+}
+@mixin label-medium {
+  font-size: round(calc($body-font-size / pow($scale-ratio, 2)), 1px);
+}
+@mixin label-small {
+  font-size: round(calc($body-font-size / pow($scale-ratio, 3)), 1px);
+}
+
+/// Calculates font-size based on body-size & type scale ratio
+@function getFontSize($root-size, $scale-ratio, $scale-position) {
+  @return round(calc($root-size * pow($scale-ratio, $scale-position)), 1px);
+}

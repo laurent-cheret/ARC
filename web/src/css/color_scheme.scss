@@ -1,0 +1,37 @@
+@use './_variables' as *;
+
+:root {
+  background-color: var(--surface);
+  color: var(--onSurface);
+}
+
+.primary {
+  background-color: var(--primary);
+  color: var(--onPrimary);
+}
+.secondary {
+  background-color: var(--secondary);
+  color: var(--onSecondary);
+}
+.tertiary {
+  background-color: var(--tertiary);
+  color: var(--onTertiary);
+}
+
+.primary-container {
+  background-color: var(--primaryContainer);
+  color: var(--onPrimaryContainer);
+  box-shadow: 0px 0px 3px 1px color-mix(in srgb, var(--shadow) 12%, transparent);
+}
+.secondary-container {
+  background-color: var(--secondaryContainer);
+  color: var(--onSecondaryContainer);
+}
+.tertiary-container {
+  background-color: var(--tertiaryContainer);
+  color: var(--onTertiaryContainer);
+}
+
+.on-surface-variant {
+  color: var(--onSurfaceVariant);
+}

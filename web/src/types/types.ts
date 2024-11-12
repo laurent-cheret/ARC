@@ -8,10 +8,12 @@ export type Example = {
 export type Task = {
   train: Example[];
   test: Example[];
+  demoActions: string[];
 };
 
 export type StepOutput = {
   step: number;
   action_name: string;
   current_grids: TaskGrid[][];
+  memory_grids: TaskGrid[][];
 };

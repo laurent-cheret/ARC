@@ -10,6 +10,13 @@ export async function getAllTaskIds(): Promise<any> {
   return await result.json();
 }
 
+export async function getPrimitiveNames(): Promise<any> {
+  const result = await fetch(`${API_ROOT}/primitives`, {
+    method: 'GET',
+  });
+  return await result.json();
+}
+
 export async function getClosestTasks(): Promise<any> {
   const result = await fetch(`${API_ROOT}/closest_tasks`, {
     method: 'GET',
@@ -24,10 +31,17 @@ export async function getTrainingTask(taskId: string): Promise<Task> {
   return await result.json();
 }
 
-export async function resetToTrainingTask(taskId: string): Promise<void> {
-  await fetch(`${API_ROOT}/demonstration/reset/${taskId}`, {
+export async function resetToTrainingTask(taskId: string): Promise<Task> {
+  const res = await fetch(`${API_ROOT}/demonstration/reset/${taskId}`, {
     method: 'GET',
   });
+  const json = await res.json();
+
+  return {
+    train: json.train,
+    test: json.test,
+    demoActions: json['demo_action_list'],
+  };
 }
 
 export async function stepDemonstration(taskId: string): Promise<StepOutput | undefined> {
@@ -39,6 +53,22 @@ export async function stepDemonstration(taskId: string): Promise<StepOutput | un
   }
   const json = await result.json();
   json.current_grids = json.current_grids.map((jsonString: string) => JSON.parse(jsonString));
+  return json;
+}
+
+export async function stepAllDemonstration(taskId: string): Promise<StepOutput[] | undefined> {
+  const result = await fetch(`${API_ROOT}/demonstration/step-all/${taskId}`, {
+    method: 'GET',
+  });
+  if (result.status != 200) {
+    return undefined;
+  }
+  const json = await result.json();
+
+  for (const step of json) {
+    step.current_grids = step.current_grids.map((jsonString: string) => JSON.parse(jsonString));
+    step.memory_grids = JSON.parse(step.memory_grids);
+  }
   return json;
 }
 
