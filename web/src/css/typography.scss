@@ -1,0 +1,152 @@
+@use './_typescales' as ts;
+
+@use './variables' as *;
+
+// Variables
+$line-height-titles: 1.2;
+$line-height-body: 1.5;
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  font-size: 16px;
+  @media screen and (max-width: $bp-tablet) {
+    font-size: 14px;
+  }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: calc($line-height-body * ts.$body-font-size * 2);
+  margin-bottom: calc($line-height-body * ts.$body-font-size);
+  line-height: $line-height-titles;
+  letter-spacing: -0.05em;
+}
+
+.display-large {
+  @include ts.display-large;
+  font-weight: $font-weight-regular;
+}
+.display-medium {
+  @include ts.display_medium;
+  font-weight: $font-weight-regular;
+}
+.display-small {
+  @include ts.display-small;
+  font-weight: $font-weight-regular;
+}
+
+h1 {
+  @include ts.headline-large;
+  font-weight: $font-weight-regular;
+}
+
+h2 {
+  @include ts.headline-medium;
+  font-weight: $font-weight-regular;
+}
+
+h3 {
+  @include ts.headline-small;
+  font-weight: $font-weight-regular;
+}
+
+h4 {
+  @include ts.title-large;
+  font-weight: $font-weight-regular;
+}
+
+h5 {
+  @include ts.title-medium;
+  font-weight: $font-weight-medium;
+}
+
+h6 {
+  @include ts.title-small;
+  font-weight: $font-weight-medium;
+}
+
+// Labels
+.label-large,
+.label-medium,
+.label-small {
+  margin: 0;
+  letter-spacing: -0.05em;
+}
+
+.label-large {
+  @include ts.label-large;
+  font-weight: 600;
+  color: var(--secondary);
+}
+.label-medium {
+  @include ts.label-medium;
+  font-weight: 500;
+}
+.label-small {
+  @include ts.label-small;
+  font-weight: 500;
+}
+
+// Body
+body {
+  @include ts.body-medium;
+  line-height: $line-height-body;
+  letter-spacing: 0.25pt;
+}
+
+.body-large {
+  @include ts.body-large;
+}
+.body-medium {
+  @include ts.body-medium;
+}
+.body-small {
+  @include ts.body-small;
+}
+
+p {
+  max-width: 65ch;
+  margin: calc($line-height-body * ts.$body-font-size) 0;
+}
+
+ul,
+ol {
+  max-width: 65ch;
+}
+
+a {
+  @include ts.label-large;
+  font-weight: 700;
+  border-radius: $border-radius;
+  text-decoration: none;
+  user-select: none;
+  color: var(--secondary);
+}
+
+// Article specific styles
+article a,
+figcaption a,
+a.link {
+  text-decoration: underline;
+  font-weight: normal;
+}
+
+article a {
+  @include ts.body-medium;
+  &:visited {
+    color: var(--tertiary);
+  }
+}

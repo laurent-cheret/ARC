@@ -1,0 +1,29 @@
+#root {
+  padding: 2rem;
+  text-align: center;
+}
+
+.app :global {
+  display: flex;
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 20px;
+
+    .title-main {
+      font-family: 'Pixelify Sans', sans-serif;
+      font-optical-sizing: auto;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .demo-list {
+      width: 100%;
+      input {
+        width: 100%;
+      }
+    }
+  }
+}

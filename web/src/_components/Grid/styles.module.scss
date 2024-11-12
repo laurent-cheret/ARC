@@ -1,0 +1,71 @@
+$gap-color: rgba(57, 57, 57, 0.51);
+
+.taskGrid :global {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+
+  justify-content: center;
+
+  .row.horiz {
+    width: 100%;
+    .cell {
+      aspect-ratio: 1;
+    }
+  }
+  .row.vert {
+    width: fit-content;
+    min-height: 0px;
+    flex: auto;
+    .cell {
+      aspect-ratio: 1;
+    }
+  }
+
+  .row {
+    display: flex;
+
+    .cell {
+      flex: 1;
+      // width: 18px;
+      // height: 18px;
+    }
+  }
+}
+
+.taskGrid :global .row .cell {
+  border: 1px solid $gap-color;
+
+  &.c0 {
+    background-color: black;
+  }
+  &.c1 {
+    background-color: rgb(30, 147, 255);
+  }
+  &.c2 {
+    background-color: rgb(249, 60, 49);
+  }
+  &.c3 {
+    background-color: rgb(79, 204, 48);
+  }
+  &.c4 {
+    background-color: rgb(255, 220, 0);
+  }
+  &.c5 {
+    background-color: rgb(153, 153, 153);
+  }
+  &.c6 {
+    background-color: rgb(229, 58, 163);
+  }
+  &.c7 {
+    background-color: rgb(255, 133, 27);
+  }
+  &.c8 {
+    background-color: rgb(135, 216, 241);
+  }
+  &.c9 {
+    background-color: rgb(146, 18, 49);
+  }
+}
