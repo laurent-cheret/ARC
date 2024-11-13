@@ -120,7 +120,7 @@ class GridTransformationEnv(gym.Env):
         arc_dataset,
         memory_capacity=5,
         max_steps=50,
-        demo_file="env\demonstrations.json",
+        demo_file="env/demonstrations.json",
     ):
         super(GridTransformationEnv, self).__init__()
         self.arc_dataset = arc_dataset
@@ -142,7 +142,7 @@ class GridTransformationEnv(gym.Env):
         )
         current_dir = os.path.dirname(os.path.abspath(__file__))
         encoder_path = os.path.join(
-            current_dir, "intuition_models\deep_arc_autoencoder_256.pth"
+            current_dir, "intuition_models/deep_arc_autoencoder_256.pth"
         )
         self.autoencoder.load_state_dict(
             torch.load(encoder_path, map_location=self.device)
